@@ -1,0 +1,1196 @@
+<!-- PyQuest: learn Python with a companion. Story mode (course path) + Survival mode (write real code). -->
+<title>PyQuest</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PyQuest">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: phone-first column (560px) for menus and lessons; Survival widens to a two-pane quest | workspace on large screens. Fixed tab bar on main screens. */
+:root{
+  --bg:#EDF1F6; --surface:#FFFFFF; --surface-2:#F5F7FA; --ink:#13203A; --muted:#58677F; --line:#D3DBE6;
+  --blue:#2B62A6; --blue-ink:#FFFFFF; --blue-soft:#DCE7F5;
+  --sun:#F2C230; --sun-ink:#2B2200; --sun-soft:#FBEFC4;
+  --good:#1C7F4F; --good-bg:#DAF1E3; --bad:#BA3434; --bad-bg:#F9E1DF;
+  --cave:#1B2236; --cave-2:#252E47; --cave-ink:#EDE6D3; --cave-muted:#A9A390;
+  --code-bg:#14213A; --code-fg:#E4ECF7; --code-line:#26365A;
+  --hk:#F2C230; --hs:#8FD3A8; --hn:#F5A07E; --hc:#7D8DA8; --hb:#8CC2FF;
+  --f-display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body:"Figtree", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1727; --surface:#16233A; --surface-2:#1B2A44; --ink:#E6EDF8; --muted:#97A6BF; --line:#283A5A;
+  --blue:#5B92D9; --blue-ink:#0B1424; --blue-soft:#1C3354;
+  --sun:#F2C230; --sun-ink:#2B2200; --sun-soft:#3A3217;
+  --good:#5BC98D; --good-bg:#14352A; --bad:#F07C72; --bad-bg:#3D1C1E;
+  --cave:#121828; --cave-2:#1C2438; --cave-ink:#EDE6D3; --cave-muted:#A9A390;
+  --code-bg:#0A1220; --code-fg:#E4ECF7; --code-line:#1E2C47; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1727; --surface:#16233A; --surface-2:#1B2A44; --ink:#E6EDF8; --muted:#97A6BF; --line:#283A5A;
+  --blue:#5B92D9; --blue-ink:#0B1424; --blue-soft:#1C3354;
+  --sun:#F2C230; --sun-ink:#2B2200; --sun-soft:#3A3217;
+  --good:#5BC98D; --good-bg:#14352A; --bad:#F07C72; --bad-bg:#3D1C1E;
+  --cave:#121828; --cave-2:#1C2438; --cave-ink:#EDE6D3; --cave-muted:#A9A390;
+  --code-bg:#0A1220; --code-fg:#E4ECF7; --code-line:#1E2C47; color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  -webkit-tap-highlight-color:transparent}
+#app{max-width:560px;margin:0 auto;padding-block:18px 40px}
+#app.wide{max-width:1080px}
+#app.withtabs{padding-bottom:110px}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+p{margin:0}
+.muted{color:var(--muted)}
+.label{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+code{font-family:var(--f-mono);font-size:.92em}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 22px;border-radius:14px;font-weight:700;font-size:16px;transition:transform .08s;text-align:center}
+.btn:active{transform:translateY(2px)}
+.btn-sun{background:var(--sun);color:var(--sun-ink);box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.btn-blue{background:var(--blue);color:var(--blue-ink);box-shadow:0 3px 0 rgba(0,0,0,.18)}
+.btn-ghost{background:var(--surface);border:1px solid var(--line)}
+.btn-ok{background:var(--good);color:var(--surface)} .btn-no{background:var(--bad);color:var(--surface)}
+.btn:disabled{opacity:.45;cursor:default;box-shadow:none}
+.btn-full{width:100%}
+.btn-sm{min-height:40px;padding:0 14px;font-size:14px;border-radius:12px}
+.linkbtn{color:var(--muted);text-decoration:underline;text-underline-offset:3px;padding:6px 0;font-size:14px}
+.linkbtn.warn{color:var(--bad);font-weight:700}
+
+/* Companions */
+.av{display:block;flex:none}
+.av svg{width:100%;height:100%;display:block}
+@media (prefers-reduced-motion:no-preference){
+  .av.happy svg{animation:hop .6s ease}
+  .av.sad svg{animation:shake .5s ease}
+  .av.idle svg{animation:breathe 3.2s ease-in-out infinite}
+}
+@keyframes hop{30%{transform:translateY(-14%)}60%{transform:translateY(0)}75%{transform:translateY(-5%)}}
+@keyframes shake{20%,60%{transform:translateX(-6%)}40%,80%{transform:translateX(6%)}}
+@keyframes breathe{50%{transform:translateY(-3%)}}
+
+/* Auth */
+.auth{display:grid;gap:22px;padding-top:12px}
+.hero-parade{display:flex;justify-content:center;gap:4px;margin-top:6px}
+.hero-parade .av{width:72px;height:72px}
+.hero-parade .av:nth-child(2) svg{animation-delay:.4s}.hero-parade .av:nth-child(3) svg{animation-delay:.8s}.hero-parade .av:nth-child(4) svg{animation-delay:1.2s}
+.logo{text-align:center;display:grid;gap:6px}
+.logo h1{font-size:44px;font-weight:800}
+.logo h1 span{color:var(--blue)}
+.logo .prompt{font-family:var(--f-mono);color:var(--blue);font-weight:600}
+.logo p{color:var(--muted);max-width:30ch;margin:0 auto}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:grid;gap:14px}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--surface-2);border-radius:12px;padding:4px;gap:4px}
+.seg button{min-height:40px;border-radius:9px;font-weight:700;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.field{display:grid;gap:6px}
+.field label{font-size:14px;font-weight:600}
+.field input{min-height:50px;padding:0 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);font-size:16px}
+.field input:focus{border-color:var(--blue);outline:none}
+.err{color:var(--bad);font-size:14px;font-weight:600}
+.err:empty{display:none}
+.ok-msg{color:var(--good);font-size:14px;font-weight:600}
+.ok-msg:empty{display:none}
+.or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.gbtn svg{width:20px;height:20px}
+.note{font-size:13px;color:var(--muted);text-align:center}
+
+/* Companion picker */
+.pick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pick{display:grid;justify-items:center;gap:6px;padding:16px 10px 14px;border-radius:18px;background:var(--surface);border:2px solid var(--line);text-align:center;box-shadow:0 3px 0 var(--line)}
+.pick .av{width:84px;height:84px}
+.pick h3{font-size:20px}
+.pick p{font-size:13px;color:var(--muted)}
+.pick[aria-pressed="true"]{border-color:var(--cc);box-shadow:0 3px 0 var(--cc);background:color-mix(in srgb,var(--cc) 10%,var(--surface))}
+.quote{font-style:italic;color:var(--muted);text-align:center;min-height:1.5em}
+
+/* Top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hello{display:flex;align-items:center;gap:12px;min-width:0}
+.hello .av{width:52px;height:52px}
+.hello .txt{min-width:0}
+.hello h1{font-size:22px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stats{display:flex;gap:6px;flex:none}
+.chip{display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.chip svg{width:16px;height:16px}
+
+/* Home modes */
+.bubble{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;font-size:15px}
+.speak{display:flex;gap:12px;align-items:flex-end;margin-top:18px}
+.speak .av{width:58px;height:58px}
+.speak .bubble{flex:1;min-width:0;border-bottom-left-radius:4px}
+.modes{display:grid;gap:14px;margin-top:20px}
+.mode{display:grid;gap:10px;text-align:left;border-radius:22px;padding:20px;position:relative;overflow:hidden;min-height:170px;align-content:end}
+.mode h2{font-size:28px;font-weight:800}
+.mode p{max-width:32ch;opacity:.92}
+.mode .meta{display:flex;gap:10px;flex-wrap:wrap;font-family:var(--f-mono);font-size:13px;opacity:.9}
+.mode-story{background:var(--blue);color:var(--blue-ink)}
+.mode-surv{background:var(--cave);color:var(--cave-ink)}
+.mode .deco{position:absolute;right:14px;top:12px;font-family:var(--f-mono);font-weight:600;font-size:15px;opacity:.55;white-space:pre;text-align:right;line-height:1.5}
+.mode-surv .deco{color:var(--sun);opacity:.8}
+.mode:active{transform:scale(.99)}
+.lvl{margin-top:20px;display:grid;gap:8px}
+.lvl .row{display:flex;justify-content:space-between;align-items:baseline}
+.lvl b{font-family:var(--f-display);font-size:18px}
+.bar{height:12px;border-radius:999px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--sun);border-radius:999px;transition:width .4s}
+
+/* Tab bar */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);
+  padding:6px max(16px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+.tab{display:grid;justify-items:center;gap:2px;padding:6px 0;font-size:12px;font-weight:700;color:var(--muted)}
+.tab svg{width:24px;height:24px}
+.tab[aria-current="page"]{color:var(--blue)}
+
+/* Story path */
+.section-head{display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 12px;gap:12px}
+.section-head h2{font-size:22px}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-weight:700;min-height:40px}
+.back svg{width:20px;height:20px}
+.track{list-style:none;margin:0;padding:0;display:grid;gap:12px;position:relative}
+.track::before{content:"";position:absolute;left:27px;top:20px;bottom:20px;width:3px;background:repeating-linear-gradient(var(--line) 0 8px,transparent 8px 14px);border-radius:2px}
+.unit{position:relative;display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:12px 14px 12px 8px;border-radius:16px}
+.unit:not(:disabled):active{background:var(--surface)}
+.node{flex:none;width:40px;height:40px;margin-left:8px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:17px;background:var(--surface);border:3px solid var(--line);color:var(--muted);position:relative;z-index:1}
+.unit.open .node{border-color:var(--blue);color:var(--blue)}
+.unit.next .node{background:var(--blue);color:var(--blue-ink);border-color:var(--blue);box-shadow:0 0 0 6px var(--blue-soft)}
+.unit.done .node{background:var(--sun);border-color:var(--sun);color:var(--sun-ink)}
+.unit .txt{min-width:0;flex:1}
+.unit h3{font-size:18px;font-weight:700}
+.unit p{margin-top:2px;font-size:14px;color:var(--muted)}
+.unit:disabled{cursor:default}
+.unit:disabled .txt{opacity:.5}
+.stars{display:flex;gap:2px;flex:none}
+.stars svg{width:18px;height:18px}
+.star-on{fill:var(--sun)} .star-off{fill:var(--line)}
+
+/* Lesson */
+.lbar{display:flex;align-items:center;gap:12px}
+.x{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--muted);flex:none}
+.x svg{width:22px;height:22px}
+.prog{flex:1;height:14px;border-radius:999px;background:var(--line);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--blue);border-radius:999px;transition:width .35s ease}
+.hearts{display:flex;gap:2px}
+.hearts svg{width:22px;height:22px}
+.h-on{fill:var(--bad)} .h-off{fill:var(--line)}
+.qtype{margin-top:26px}
+.qtitle{font-size:24px;font-weight:700;margin-top:6px}
+.retry{display:inline-block;margin-left:8px;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--sun-soft);color:var(--ink);vertical-align:middle;font-family:var(--f-body);font-weight:700;letter-spacing:.04em}
+.code{margin-top:16px;background:var(--code-bg);color:var(--code-fg);border-radius:16px;font-family:var(--f-mono);font-size:15px;line-height:1.6;overflow-x:auto}
+.code pre{margin:0;padding:16px 18px;white-space:pre;font-family:inherit}
+.code .dots{display:flex;gap:6px;padding:10px 14px 0}
+.code .dots i{width:9px;height:9px;border-radius:50%;background:var(--code-line)}
+.tk{color:var(--hk)} .ts{color:var(--hs)} .tn{color:var(--hn)} .tc{color:var(--hc);font-style:italic} .tb{color:var(--hb)}
+.slot{display:inline-block;min-width:3.2ch;padding:0 6px;border-radius:6px;border:2px dashed var(--hk);color:var(--hk);text-align:center;line-height:1.3}
+.slot.filled{border-style:solid;background:var(--hk);color:var(--code-bg);font-weight:600}
+.opts{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts.wide{grid-template-columns:1fr}
+.opt{min-height:56px;padding:12px 14px;border-radius:14px;background:var(--surface);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);font-family:var(--f-mono);font-size:15px;text-align:left;white-space:pre-wrap;word-break:break-word}
+.opt:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.opt.sel{border-color:var(--blue);background:var(--blue-soft);box-shadow:0 3px 0 var(--blue)}
+.opt.right{border-color:var(--good);background:var(--good-bg);box-shadow:0 3px 0 var(--good)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);box-shadow:0 3px 0 var(--bad)}
+.opt:disabled{cursor:default}
+.answer{margin-top:16px;min-height:120px;border:2px dashed var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.answer:empty::before{content:"Tap lines below to build the program";color:var(--muted);font-size:14px;margin:auto}
+.pool{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.ln{text-align:left;font-family:var(--f-mono);font-size:14px;white-space:pre;overflow-x:auto;padding:10px 12px;border-radius:12px;background:var(--code-bg);color:var(--code-fg);box-shadow:0 3px 0 var(--code-line)}
+.ln:disabled{cursor:default}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--bg);border-top:1px solid var(--line);
+  padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.dock.ok{background:var(--good-bg);border-color:transparent}
+.dock.no{background:var(--bad-bg);border-color:transparent}
+.dock .in{max-width:560px;margin:0 auto;display:grid;gap:12px}
+.fb{max-height:55vh;overflow-y:auto;-webkit-overflow-scrolling:touch;display:grid;gap:10px}
+.fb-head{display:flex;align-items:center;gap:10px}
+.fb-head .av{width:44px;height:44px}
+.fb h3{font-size:21px}
+.fb .says{font-size:14px;color:var(--muted)}
+.dock.ok .fb h3{color:var(--good)} .dock.no .fb h3{color:var(--bad)}
+.fb .trap{padding:10px 12px;border-radius:12px;background:var(--surface);font-size:15px}
+.fb code{background:var(--surface);padding:1px 6px;border-radius:6px}
+.logic ol{margin:6px 0 0;padding-left:24px;display:grid;gap:6px}
+.logic li{font-size:15px;padding-left:2px}
+.logic li::marker{font-family:var(--f-mono);font-weight:600;color:var(--muted)}
+.mini{background:var(--code-bg);color:var(--code-fg);border-radius:12px;font-family:var(--f-mono);font-size:13px;overflow-x:auto}
+.mini pre{margin:0;padding:10px 12px;white-space:pre;font-family:inherit}
+.spacer{height:340px}
+
+/* Results */
+.result{text-align:center;padding-top:30px;display:grid;gap:18px;justify-items:center}
+.result h2{font-size:34px;font-weight:800}
+.result .av{width:110px;height:110px}
+.bigstars{display:flex;gap:8px}
+.bigstars svg{width:56px;height:56px}
+.bigstars svg:nth-child(2){transform:translateY(-12px)}
+@media (prefers-reduced-motion:no-preference){.bigstars .star-on{animation:pop .5s backwards;transform-origin:center;transform-box:fill-box}.bigstars svg:nth-child(2) .star-on{animation-delay:.15s}.bigstars svg:nth-child(3) .star-on{animation-delay:.3s}}
+@keyframes pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.tiles.two{grid-template-columns:repeat(2,1fr)}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center}
+.tile b{display:block;font-family:var(--f-display);font-size:24px;font-variant-numeric:tabular-nums}
+.tile span{font-size:12px;color:var(--muted);font-weight:600}
+.result .btns{display:grid;gap:10px;width:100%;margin-top:6px}
+
+/* Progress / profile */
+.list{display:grid;gap:8px}
+.row-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.row-item .t{min-width:0}
+.row-item h3{font-size:16px;font-family:var(--f-body);font-weight:700}
+.row-item p{font-size:13px;color:var(--muted)}
+.pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.pill.good{background:var(--good-bg);color:var(--good)}
+.pill.sun{background:var(--sun-soft);color:var(--ink)}
+.pill.dim{background:var(--surface-2);color:var(--muted)}
+.prof-head{display:flex;align-items:center;gap:16px;margin-top:8px}
+.prof-head .av{width:84px;height:84px}
+.prof-head h1{font-size:28px;font-weight:800}
+
+/* Survival */
+.cave-wrap{background:var(--cave);color:var(--cave-ink);border-radius:22px;padding:18px;display:grid;gap:16px}
+.cave-wrap .label{color:var(--cave-muted)}
+.sbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.depth{font-family:var(--f-display);font-weight:800;font-size:20px}
+.energy{display:flex;gap:2px}
+.energy svg{width:20px;height:20px}
+.e-on{fill:var(--sun)} .e-off{fill:var(--cave-2)}
+.gems{font-family:var(--f-mono);font-weight:600;color:var(--sun);font-size:14px}
+.qgrid{display:grid;gap:16px;margin-top:14px}
+@media (min-width:900px){.qgrid{grid-template-columns:minmax(0,5fr) minmax(0,6fr);align-items:start}.qgrid .ws{position:sticky;top:16px}}
+.qside{display:grid;gap:14px;min-width:0}
+.cave-speak{display:flex;gap:12px;align-items:flex-start}
+.cave-speak .av{width:64px;height:64px}
+.cave-bubble{flex:1;min-width:0;background:var(--cave-2);border-radius:16px;border-top-left-radius:4px;padding:12px 14px;font-size:15px;display:grid;gap:4px}
+.cave-bubble b{color:var(--sun)}
+.task{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:10px}
+.task h3{font-size:20px}
+.task .sig{font-family:var(--f-mono);font-size:14px;background:var(--surface-2);padding:8px 10px;border-radius:10px;overflow-x:auto;white-space:pre}
+.examples{display:grid;gap:4px;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.examples div{overflow-x:auto;white-space:pre}
+.hints{display:grid;gap:10px}
+.hint{display:flex;gap:10px;align-items:flex-start;background:var(--sun-soft);border-radius:14px;padding:10px 12px;font-size:15px}
+.hint .av{width:34px;height:34px}
+.hint b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.hint .mini{margin-top:6px}
+.ws{background:var(--code-bg);border-radius:18px;overflow:hidden;min-width:0;display:grid}
+.ws-head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;color:var(--hc);font-family:var(--f-mono);font-size:13px;gap:10px}
+.ws-head .eng{display:flex;align-items:center;gap:6px}
+.ws-head .eng i{width:8px;height:8px;border-radius:50%;background:var(--hc)}
+.ws-head .eng.ready i{background:var(--hs)}
+.editor{width:100%;min-height:260px;resize:vertical;border:0;outline:none;background:transparent;color:var(--code-fg);font-family:var(--f-mono);font-size:15px;line-height:1.6;padding:6px 16px 16px;tab-size:4;white-space:pre;overflow-x:auto}
+.editor:focus-visible{outline:none;box-shadow:inset 0 0 0 2px var(--sun)}
+.keys{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;border-top:1px solid var(--code-line);scrollbar-width:none}
+.keys button{flex:none;min-width:40px;height:38px;padding:0 10px;border-radius:9px;background:var(--code-line);color:var(--code-fg);font-family:var(--f-mono);font-size:15px}
+.ws-actions{display:flex;gap:10px;padding:12px;border-top:1px solid var(--code-line);flex-wrap:wrap}
+.ws-actions .btn{flex:1}
+.ws-actions .btn-ghost{background:transparent;border-color:var(--code-line);color:var(--code-fg);flex:0 0 auto}
+.console{border-top:1px solid var(--code-line);padding:12px 16px 16px;font-family:var(--f-mono);font-size:13px;color:var(--code-fg);display:grid;gap:8px}
+.console:empty{display:none}
+.console .h{color:var(--hc);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.console pre{margin:0;white-space:pre-wrap;word-break:break-word;font-family:inherit}
+.trow{display:flex;gap:8px;align-items:flex-start}
+.trow .m{flex:none;font-weight:600}
+.trow.pass .m{color:var(--hs)} .trow.fail .m{color:var(--hn)}
+.trow .d{min-width:0;overflow-x:auto;white-space:pre}
+.errbox{color:var(--hn)}
+.win{background:var(--good-bg);border-radius:16px;padding:16px;display:grid;gap:10px}
+.win h3{color:var(--good);font-size:22px}
+.lose{background:var(--bad-bg);border-radius:16px;padding:14px 16px;display:grid;gap:6px}
+.lose h3{color:var(--bad);font-size:19px}
+.lobby{display:grid;gap:14px}
+.lobby .av{width:96px;height:96px}
+.lobby-hero{display:flex;gap:16px;align-items:center}
+.chambers{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.chamber{aspect-ratio:1;max-width:100%;border-radius:12px;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;background:var(--cave-2);color:var(--cave-muted)}
+.chamber.cleared{background:var(--sun);color:var(--sun-ink)}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom,0px));z-index:20;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;font-weight:600;max-width:min(90vw,420px);text-align:center}
+.loading{display:grid;place-items:center;min-height:60vh;gap:12px;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div id="app"><div class="loading"><p class="label">Loading PyQuest</p></div></div>
+
+<script src="config.js"></script>
+<script>
+/* ================= Content: Story mode units ================= */
+const UNITS = [
+ {title:"Variables & numbers", blurb:"Names, types, arithmetic", qs:[
+  {t:"out", code:"x = 5\ny = x + 2\nprint(y)", opts:["7","5","x + 2","52"], a:0,
+   steps:["x = 5 stores the number 5 in x.","y = x + 2 looks up x (5) and adds 2, so y holds 7.","print(y) shows the value of y: 7."],
+   trap:{"5":"That is x. y was calculated from x, but it is a separate variable.","x + 2":"Python evaluates the expression. It never prints the code you wrote.","52":"That would be text joining (\"5\" + \"2\"). Here both values are numbers, so + adds."}},
+  {t:"out", code:"print(type(3.0))", opts:["<class 'float'>","<class 'int'>","<class 'str'>","3"], a:0,
+   steps:["3.0 has a decimal point, so Python creates a float, even though the value is a whole number.","type() returns the class of a value.","print shows a class as <class 'float'>."],
+   trap:{"<class 'int'>":"3 would be an int. The .0 makes it a float.","<class 'str'>":"It would be a str only inside quotes, like \"3.0\".","3":"print(type(...)) shows the type, not the value."}},
+  {t:"fill", q:"Make it print Hi, Ada", code:"name = \"Ada\"\nprint(\"Hi, \" ___ name)", opts:["+","*","/","-"], a:0,
+   steps:["Both sides are strings: \"Hi, \" and name, which holds \"Ada\".","+ between two strings joins them: \"Hi, \" + \"Ada\" becomes \"Hi, Ada\".","print shows the joined string."],
+   trap:{"*":"str * str raises a TypeError. * only works as str * int, which repeats text.","/":"Strings cannot be divided. TypeError.","-":"Strings cannot be subtracted. TypeError."}},
+  {t:"out", code:"print(7 // 2, 7 % 2)", opts:["3 1","3.5 1","3 0.5","4 1"], a:0,
+   steps:["7 // 2 is floor division: 7 / 2 = 3.5, rounded down to 3.","7 % 2 is the remainder: 2 fits into 7 three times (6), leaving 1.","print with two values puts a space between them: 3 1."],
+   trap:{"3.5 1":"3.5 is the result of 7 / 2. The double slash // drops the fraction.","3 0.5":"% gives the whole remainder, 1, not a fraction.","4 1":"// always rounds down, not to the nearest number."}},
+  {t:"order", q:"Build a program that prints the average, 5.0", lines:["a = 4","b = 6","avg = (a + b) / 2","print(avg)"],
+   steps:["a and b must be defined before any line uses them.","avg = (a + b) / 2 computes (4 + 6) / 2 = 10 / 2.","A single / always returns a float, so avg is 5.0, not 5.","print(avg) goes last, once avg exists."]}
+ ]},
+ {title:"Strings", blurb:"Indexing, slicing, methods", qs:[
+  {t:"out", code:"s = \"python\"\nprint(s[0], s[-1])", opts:["p n","p o","y n","python"], a:0,
+   steps:["Strings are indexed from 0: p=0, y=1, t=2, h=3, o=4, n=5.","s[0] is the first character, \"p\".","Negative indexes count from the end, so s[-1] is the last character, \"n\".","print separates the two values with a space: p n."],
+   trap:{"p o":"s[-1] is the last character, n. o is s[-2].","y n":"Indexing starts at 0, so s[0] is p, not y.","python":"An index picks one character, not the whole string."}},
+  {t:"out", code:"print(\"ha\" * 3)", opts:["hahaha","ha3","ha ha ha","Error"], a:0,
+   steps:["A string times an integer repeats the string.","\"ha\" * 3 is the same as \"ha\" + \"ha\" + \"ha\".","No spaces are added, so the result is hahaha."],
+   trap:{"ha3":"* does not turn 3 into text. It repeats the string.","ha ha ha":"Repetition adds no separators between copies.","Error":"str * int is valid. Only str * str fails."}},
+  {t:"out", code:"print(\"Hello\"[1:4])", opts:["ell","Hel","ello","ell o"], a:0,
+   steps:["Number the letters: H=0, e=1, l=2, l=3, o=4.","The slice [1:4] starts at index 1 and stops before index 4, so it takes 1, 2, 3.","Those characters are e, l, l, giving \"ell\"."],
+   trap:{"Hel":"That is [0:3]. This slice starts at index 1.","ello":"That is [1:5]. The end index, 4, is excluded.","ell o":"A slice is one continuous piece. Nothing is skipped or spaced."}},
+  {t:"fill", q:"Make it print LOOP", code:"word = \"loop\"\nprint(word.___())", opts:["upper","lower","title","strip"], a:0,
+   steps:["word.___() calls a method on the string \"loop\".","upper() returns a new string with every letter capitalised: \"LOOP\".","print shows LOOP. The original word is unchanged, because strings cannot be modified in place."],
+   trap:{"lower":"lower() makes everything lowercase: \"loop\".","title":"title() capitalises only the first letter of each word: \"Loop\".","strip":"strip() removes spaces around the text. It stays \"loop\"."}},
+  {t:"out", code:"print(len(\"data science\"))", opts:["12","11","2","13"], a:0,
+   steps:["len counts every character in a string.","\"data\" has 4, the space has 1, \"science\" has 7.","4 + 1 + 7 = 12."],
+   trap:{"11":"You probably skipped the space. Spaces count as characters.","2":"len counts characters, not words.","13":"Count again: d-a-t-a (4), space (1), s-c-i-e-n-c-e (7)."}}
+ ]},
+ {title:"Lists", blurb:"Append, slice, sort, references", qs:[
+  {t:"out", code:"nums = [3, 1, 2]\nnums.append(5)\nprint(nums)", opts:["[3, 1, 2, 5]","[5, 3, 1, 2]","[1, 2, 3, 5]","[3, 1, 2]"], a:0,
+   steps:["nums starts as [3, 1, 2].",".append(5) adds 5 to the end. It changes the list in place.","The existing order is kept. Nothing is sorted. Result: [3, 1, 2, 5]."],
+   trap:{"[5, 3, 1, 2]":"append adds at the end. Adding at the front needs insert(0, 5).","[1, 2, 3, 5]":"append never sorts. You would need sort() for that.","[3, 1, 2]":"append changes nums in place, so print sees the 5."}},
+  {t:"out", code:"a = [10, 20, 30, 40]\nprint(a[1:3])", opts:["[20, 30]","[10, 20, 30]","[20, 30, 40]","[30, 40]"], a:0,
+   steps:["Indexes: 10 is 0, 20 is 1, 30 is 2, 40 is 3.","[1:3] takes index 1 and 2, stopping before 3.","Result: [20, 30]. List slices follow the same rule as string slices."],
+   trap:{"[10, 20, 30]":"That is a[0:3]. This slice starts at 1.","[20, 30, 40]":"That is a[1:4]. Index 3 is excluded here.","[30, 40]":"That is a[2:4]."}},
+  {t:"fill", q:"Make fruits equal [\"fig\", \"kiwi\"]", code:"fruits = [\"fig\"]\nfruits.___(\"kiwi\")", opts:["append","add","push","insert"], a:0,
+   steps:["fruits is a list: [\"fig\"].","Lists add one item to the end with .append(item).","After the call, fruits is [\"fig\", \"kiwi\"]."],
+   trap:{"add":"add() belongs to sets. On a list it raises AttributeError.","push":"push is from JavaScript. Python lists have no push method.","insert":"insert needs a position first, like insert(1, \"kiwi\"). With one argument it raises TypeError."}},
+  {t:"out", code:"print(sorted([3, 1, 2], reverse=True))", opts:["[3, 2, 1]","[1, 2, 3]","[2, 1, 3]","None"], a:0,
+   steps:["sorted() builds a new sorted list and leaves the original alone.","By default it sorts smallest first: [1, 2, 3].","reverse=True flips that order: [3, 2, 1]."],
+   trap:{"[1, 2, 3]":"That ignores reverse=True.","[2, 1, 3]":"That is the input reversed, not sorted.","None":"list.sort() returns None. sorted() returns the new list."}},
+  {t:"out", code:"x = [1, 2]\ny = x\ny.append(3)\nprint(x)", opts:["[1, 2, 3]","[1, 2]","[3]","Error"], a:0,
+   steps:["x = [1, 2] creates one list object in memory.","y = x makes y a second name for that same object. No copy is made.","y.append(3) changes the shared list.","So x also shows [1, 2, 3]. To get an independent copy, write y = x.copy()."],
+   trap:{"[1, 2]":"That would be true if y were a copy. Assigning a list never copies it.","[3]":"append adds to the existing list. It does not replace it.","Error":"Every line here is valid Python."}}
+ ]},
+ {title:"Conditionals", blurb:"if, elif, else, booleans", qs:[
+  {t:"out", code:"t = 18\nif t > 25:\n    print(\"hot\")\nelif t > 15:\n    print(\"mild\")\nelse:\n    print(\"cold\")", opts:["mild","hot","cold","mild cold"], a:0,
+   steps:["t is 18.","First check: 18 > 25 is False, so \"hot\" is skipped.","Next check: 18 > 15 is True, so \"mild\" is printed.","Once one branch runs, Python skips the rest of the chain, including else."],
+   trap:{"hot":"18 > 25 is False.","cold":"else only runs when every condition above it is False.","mild cold":"An if / elif / else chain runs at most one branch."}},
+  {t:"out", code:"print(5 > 3 and 2 > 4)", opts:["False","True","None","Error"], a:0,
+   steps:["5 > 3 is True.","2 > 4 is False.","and is True only when both sides are True. True and False gives False."],
+   trap:{"True":"That would be the result of or. and needs both sides True.","None":"Comparisons always give True or False, never None.","Error":"Comparing integers is valid."}},
+  {t:"fill", q:"Print even for even numbers", code:"if n ___ 2 == 0:\n    print(\"even\")", opts:["%","//","/","**"], a:0,
+   steps:["A number is even when dividing it by 2 leaves nothing over.","n % 2 gives that remainder: 0 for even numbers, 1 for odd numbers.","So n % 2 == 0 is True exactly when n is even."],
+   trap:{"//":"n // 2 is how many times 2 fits. It equals 0 only for n = 0 or 1.","/":"n / 2 equals 0 only when n is 0.","**":"n ** 2 is n squared. It equals 0 only when n is 0."}},
+  {t:"out", code:"print(bool(\"\"), bool(\"0\"))", opts:["False True","False False","True True","True False"], a:0,
+   steps:["bool() asks whether a value counts as True.","Empty things count as False: \"\", [], {}, 0, None.","\"\" is empty, so bool(\"\") is False.","\"0\" is a string containing one character, so it is not empty: True."],
+   trap:{"False False":"\"0\" is text, not the number 0. Any non-empty string is True.","True True":"The empty string counts as False.","True False":"It is the other way round."}},
+  {t:"order", q:"Build a program that prints odd", lines:["n = 7","if n % 2 == 0:","    print(\"even\")","else:","    print(\"odd\")"],
+   steps:["n = 7 comes first so the condition has a value to test.","if n % 2 == 0: checks for even. 7 % 2 is 1, so this is False.","The indented print(\"even\") belongs to the if, so it is skipped.","else: catches every other case, and its indented print(\"odd\") runs."]}
+ ]},
+ {title:"Loops", blurb:"for, while, range, break", qs:[
+  {t:"out", code:"for i in range(3):\n    print(i, end=\" \")", opts:["0 1 2","1 2 3","0 1 2 3","3"], a:0,
+   steps:["range(3) produces 0, 1, 2. It starts at 0 and stops before 3.","The loop body runs once for each value and prints i.","end=\" \" replaces the usual newline with a space, so everything stays on one line: 0 1 2."],
+   trap:{"1 2 3":"range starts at 0 unless you give a start value.","0 1 2 3":"The stop value, 3, is never included.","3":"range(3) produces three values, not the number 3."}},
+  {t:"out", code:"total = 0\nfor n in [1, 2, 3, 4]:\n    total += n\nprint(total)", opts:["10","4","1234","0"], a:0,
+   steps:["total starts at 0.","Each pass adds n: after 1 it is 1, after 2 it is 3, after 3 it is 6, after 4 it is 10.","print is not indented, so it runs once after the loop: 10."],
+   trap:{"4":"That is the last n. total keeps a running sum.","1234":"total += n adds numbers. It does not join them as text.","0":"total += n updates total on every pass."}},
+  {t:"out", code:"i = 0\nwhile i < 10:\n    i += 3\nprint(i)", opts:["12","9","10","15"], a:0,
+   steps:["Start with i = 0. 0 < 10 is True, so i becomes 3.","3 < 10, so i becomes 6. 6 < 10, so i becomes 9. 9 < 10, so i becomes 12.","Now 12 < 10 is False, so the loop stops.","print(i) runs after the loop and shows 12."],
+   trap:{"9":"At 9 the check 9 < 10 is still True, so the loop runs one more time.","10":"i grows by 3 each time, so it never equals 10.","15":"At 12 the condition is already False, so the loop stops."}},
+  {t:"fill", q:"Make it print only 0 1 2", code:"for i in range(5):\n    if i == 3:\n        ___\n    print(i)", opts:["break","continue","pass","return"], a:0,
+   steps:["The loop goes through i = 0, 1, 2, 3, 4.","For 0, 1 and 2, the if is False, so print(i) runs.","At i = 3, break exits the whole loop at once. 3 and 4 are never printed."],
+   trap:{"continue":"continue skips only i = 3, then carries on and prints 4. Output: 0 1 2 4.","pass":"pass does nothing, so all of 0 to 4 print.","return":"return only works inside a function. Here it is a SyntaxError."}},
+  {t:"out", code:"print(list(range(2, 10, 3)))", opts:["[2, 5, 8]","[2, 5, 8, 11]","[3, 6, 9]","[2, 3, 4]"], a:0,
+   steps:["range(start, stop, step): start is 2, stop is 10, step is 3.","Values: 2, then 5, then 8. The next would be 11, which is not below 10.","list() collects them: [2, 5, 8]."],
+   trap:{"[2, 5, 8, 11]":"11 is past the stop value, 10.","[3, 6, 9]":"The sequence starts at 2, not 3.","[2, 3, 4]":"The third argument is the step size, 3."}}
+ ]},
+ {title:"Functions", blurb:"def, return, defaults", qs:[
+  {t:"out", code:"def double(x):\n    return x * 2\n\nprint(double(4))", opts:["8","4","x * 2","None"], a:0,
+   steps:["def double(x): defines the function. Nothing runs yet.","double(4) calls it, with x set to 4.","return x * 2 sends back 8.","print shows the returned value: 8."],
+   trap:{"4":"The function doubles x before returning it.","x * 2":"Code is evaluated. It is never printed as text.","None":"The function has a return statement, so it gives back a value."}},
+  {t:"out", code:"def greet(name=\"friend\"):\n    return \"Hi \" + name\n\nprint(greet())", opts:["Hi friend","Hi","Hi name","Error"], a:0,
+   steps:["name=\"friend\" gives the parameter a default value.","greet() passes no argument, so name uses the default, \"friend\".","\"Hi \" + \"friend\" is \"Hi friend\"."],
+   trap:{"Hi":"name is not empty. It falls back to the default.","Hi name":"name is a variable, so its value is used, not its name.","Error":"With a default value, the argument becomes optional."}},
+  {t:"fill", q:"Make square(3) give back 9", code:"def square(n):\n    ___ n * n", opts:["return","print","def","yield"], a:0,
+   steps:["\"Give back\" means the caller receives a value it can store, like x = square(3).","return n * n sends 9 back to the caller.","After the call, x would hold 9."],
+   trap:{"print":"print shows 9 on screen, but the function still returns None. x would be None.","def":"def starts a new function definition. It cannot go here.","yield":"yield turns the function into a generator, so square(3) would not equal 9."}},
+  {t:"out", code:"def f():\n    pass\n\nprint(f())", opts:["None","pass","0","Error"], a:0,
+   steps:["pass is a placeholder. It does nothing.","The function ends without a return statement.","Python then returns None automatically, and print shows None."],
+   trap:{"pass":"pass is a statement, not a value.","0":"The automatic return value is None, not 0.","Error":"A function containing only pass is valid."}},
+  {t:"order", q:"Build a program that prints 12", lines:["def area(w, h):","    return w * h","result = area(3, 4)","print(result)"],
+   steps:["def area(w, h): must come before any call to area.","The indented return w * h is the function's body.","area(3, 4) computes 3 * 4 = 12 and stores it in result.","print(result) shows 12."]}
+ ]},
+ {title:"Dictionaries", blurb:"Keys, values, get, items", qs:[
+  {t:"out", code:"ages = {\"ana\": 30, \"bo\": 25}\nprint(ages[\"bo\"])", opts:["25","30","bo","Error"], a:0,
+   steps:["ages maps names (keys) to numbers (values).","ages[\"bo\"] looks up the key \"bo\".","The value stored there is 25."],
+   trap:{"30":"30 belongs to the key \"ana\".","bo":"Square brackets return the value, not the key.","Error":"The key exists, so there is no KeyError."}},
+  {t:"out", code:"d = {\"a\": 1}\nd[\"b\"] = 2\nprint(len(d))", opts:["2","1","3","4"], a:0,
+   steps:["d starts with one pair: \"a\": 1.","d[\"b\"] = 2 adds a new pair, because \"b\" was not a key yet.","len(d) counts the keys: 2."],
+   trap:{"1":"Assigning to a missing key creates it.","3":"len counts pairs. 1 and 2 are values, not extra entries.","4":"Each key and its value count as one entry."}},
+  {t:"out", code:"d = {\"x\": 1}\nprint(d.get(\"y\", 0))", opts:["0","None","1","KeyError"], a:0,
+   steps:["\"y\" is not a key in d.","d[\"y\"] would crash with a KeyError, but .get handles missing keys.",".get(key, default) returns the default when the key is missing, so it gives 0."],
+   trap:{"None":"None is returned only when you leave out the second argument.","1":"1 belongs to the key \"x\".","KeyError":"Only d[\"y\"] raises KeyError. .get is the safe lookup."}},
+  {t:"fill", q:"Loop over keys and values together", code:"for key, value in scores.___():\n    print(key, value)", opts:["items","keys","values","pairs"], a:0,
+   steps:["for key, value in ... unpacks two things on every pass.",".items() yields (key, value) pairs, which fill both names at once."],
+   trap:{"keys":".keys() yields one key at a time, so unpacking into two names fails.","values":".values() yields one value at a time, so unpacking fails.","pairs":"Dictionaries have no .pairs() method. AttributeError."}},
+  {t:"out", code:"sq = {n: n * n for n in range(3)}\nprint(sq)", opts:["{0: 0, 1: 1, 2: 4}","{1: 1, 2: 4, 3: 9}","[0, 1, 4]","{0, 1, 4}"], a:0,
+   steps:["range(3) gives n = 0, 1, 2.","For each n, the comprehension adds the pair n: n * n.","0 gives 0: 0, 1 gives 1: 1, 2 gives 2: 4. Result: {0: 0, 1: 1, 2: 4}."],
+   trap:{"{1: 1, 2: 4, 3: 9}":"range(3) starts at 0 and stops before 3.","[0, 1, 4]":"Curly braces with key: value make a dict, not a list.","{0, 1, 4}":"That is a set. The colon makes it a dict."}}
+ ]}
+];
+
+
+/* ================= Content: Survival quests ================= */
+const py=(...l)=>l.join("\n");
+const QUESTS=[
+ {id:"gate", title:"The Rune Gate", fn:"gate_code", sig:"gate_code(a, b)",
+  story:"{c} found the entrance to the Ruins of Recursion. Two glowing runes sit beside a stone gate. The gate opens only for their combined value.",
+  task:"Return the sum of the two rune numbers a and b.",
+  starter:py("def gate_code(a, b):","    # combine the two runes and return the result","    pass"),
+  tests:[[[3,4],7],[[10,-2],8],[[0,0],0]],
+  hints:["A function hands its answer back with the return keyword. print only shows it.","You need to add a and b together.","Write: return a + b"],
+  logic:["The gate calls gate_code with two numbers.","a + b adds them.","return sends the total back to the gate, which compares it with the expected value."],
+  solution:py("def gate_code(a, b):","    return a + b")},
+ {id:"torch", title:"Torches in the Hall", fn:"count_torches", sig:"count_torches(rooms)",
+  story:"Beyond the gate is a long dark hall. {c} needs to know how many torches are left before going deeper.",
+  task:"rooms is a list of strings. Return how many of them are exactly \"torch\".",
+  starter:py("def count_torches(rooms):","    count = 0","    # look at every room","    return count"),
+  tests:[[[["torch","rat","torch"]],2],[[[]],0],[[["rat","web"]],0],[[["torch","torch","torch","torch"]],4]],
+  hints:["Go through the list one item at a time with a for loop.","Inside the loop, check: if room == \"torch\":","When it matches, add 1: count += 1. Return count after the loop ends."],
+  logic:["count starts at 0, the right answer for an empty list.","for room in rooms visits every item once.","Each match adds 1 to count.","return count runs after the loop, so it reports the full total. A shortcut also works: return rooms.count(\"torch\")."],
+  solution:py("def count_torches(rooms):","    count = 0","    for room in rooms:","        if room == \"torch\":","            count += 1","    return count")},
+ {id:"echo", title:"The Echo Bridge", fn:"echo", sig:"echo(word)",
+  story:"A rope bridge hangs over a canyon. Whatever {c} shouts comes back reversed, and the bridge only holds if you answer with the echo first.",
+  task:"Return word written backwards. echo(\"cave\") returns \"evac\".",
+  starter:py("def echo(word):","    pass"),
+  tests:[[["cave"],"evac"],[["a"],"a"],[[""],""],[["level"],"level"]],
+  hints:["Strings can be sliced like lists: word[start:stop:step].","A step of -1 walks backwards through the string.","Write: return word[::-1]"],
+  logic:["Leaving start and stop empty means the whole string.","Step -1 reads it from the last character to the first.","An empty string reversed is still empty, so no special case is needed."],
+  solution:py("def echo(word):","    return word[::-1]")},
+ {id:"stones", title:"Even Stepping Stones", fn:"even_stones", sig:"even_stones(nums)",
+  story:"Numbered stones cross a lava river. {c} remembers the rule: only even stones are safe to step on.",
+  task:"Return a new list containing only the even numbers from nums, in the same order.",
+  starter:py("def even_stones(nums):","    safe = []","    # keep only the even numbers","    return safe"),
+  tests:[[[[1,2,3,4]],[2,4]],[[[7,9]],[]],[[[0,-2,5]],[0,-2]]],
+  hints:["Loop over nums and decide for each number whether to keep it.","A number is even when n % 2 == 0. That includes 0 and negative even numbers.","Inside the if, use safe.append(n)."],
+  logic:["safe starts empty and collects the answers.","n % 2 is the remainder after dividing by 2, which is 0 for even numbers.","append keeps the original order.","Short version: return [n for n in nums if n % 2 == 0]."],
+  solution:py("def even_stones(nums):","    safe = []","    for n in nums:","        if n % 2 == 0:","            safe.append(n)","    return safe")},
+ {id:"chest", title:"The Heaviest Chest", fn:"heaviest", sig:"heaviest(weights)",
+  story:"Three treasure chests sit on a scale. {c} can only carry one out: the heaviest. Some weights are cursed and negative.",
+  task:"Return the largest number in weights. The list always has at least one number.",
+  starter:py("def heaviest(weights):","    pass"),
+  tests:[[[[3,9,2]],9],[[[-5,-1,-8]],-1],[[[4]],4]],
+  hints:["Keep track of the biggest value seen so far while you loop.","Start with the first item, best = weights[0]. Starting at 0 breaks when every weight is negative.","For each w, if w > best: best = w. Return best at the end."],
+  logic:["best = weights[0] guarantees best is a real value from the list.","Each weight is compared with the current best and replaces it if larger.","After the loop, best is the maximum. Python's built-in max(weights) does the same thing."],
+  solution:py("def heaviest(weights):","    best = weights[0]","    for w in weights:","        if w > best:","            best = w","    return best")},
+ {id:"key", title:"Where Is the Key?", fn:"find_key", sig:"find_key(rooms)",
+  story:"The next door is locked. {c} sketched a map of the side rooms but needs to know which one holds the key.",
+  task:"Return the index of the first \"key\" in rooms. If there is no key, return -1.",
+  starter:py("def find_key(rooms):","    pass"),
+  tests:[[[["box","key","rat"]],1],[[["box"]],-1],[[["key","key"]],0]],
+  hints:["You need both the position and the item. enumerate(rooms) gives you both.","for i, room in enumerate(rooms): then return i as soon as room == \"key\".","Put return -1 after the loop, so it only runs when no key was found."],
+  logic:["enumerate pairs each item with its index.","Returning inside the loop stops at the first match, which is why [\"key\", \"key\"] gives 0.","If the loop finishes without returning, there was no key, so -1 is returned."],
+  solution:py("def find_key(rooms):","    for i, room in enumerate(rooms):","        if room == \"key\":","            return i","    return -1")},
+ {id:"potion", title:"The Potion Shelf", fn:"mix", sig:"mix(potions)",
+  story:"An old alchemist's shelf is covered in bottles. {c} must report how many of each colour there are before mixing anything.",
+  task:"Return a dictionary that maps each potion name to how many times it appears.",
+  starter:py("def mix(potions):","    counts = {}","    # count every potion","    return counts"),
+  tests:[[[["red","blue","red"]],{red:2,blue:1}],[[[]],{}],[[["gold"]],{gold:1}]],
+  hints:["Loop over potions. Each one either is already in counts or is new.","counts.get(p, 0) gives the current count, or 0 if p is new.","Write: counts[p] = counts.get(p, 0) + 1"],
+  logic:["counts starts as an empty dictionary.","For each potion, .get returns the count so far, defaulting to 0.","Adding 1 and storing it back updates or creates the entry.","An empty shelf returns {}, which is correct."],
+  solution:py("def mix(potions):","    counts = {}","    for p in potions:","        counts[p] = counts.get(p, 0) + 1","    return counts")},
+ {id:"guard", title:"The Fizz Guardians", fn:"guard", sig:"guard(n)",
+  story:"Two stone guardians block the stairs. They shout numbers, and {c} must answer with their secret words.",
+  task:"Return \"FizzBuzz\" if n divides by 3 and 5, \"Fizz\" if only by 3, \"Buzz\" if only by 5, otherwise n as a string.",
+  starter:py("def guard(n):","    pass"),
+  tests:[[[3],"Fizz"],[[10],"Buzz"],[[15],"FizzBuzz"],[[7],"7"],[[30],"FizzBuzz"]],
+  hints:["Divisible means the remainder is 0: n % 3 == 0.","Check the combined case first. If you check 3 first, 15 would stop at \"Fizz\".","The last case must return str(n), not n, because the answer is text."],
+  logic:["if / elif / else runs only the first true branch, so order matters.","n % 15 == 0 (or both checks with and) catches FizzBuzz before the single cases.","str(n) turns the number into text, so 7 becomes \"7\"."],
+  solution:py("def guard(n):","    if n % 3 == 0 and n % 5 == 0:","        return \"FizzBuzz\"","    elif n % 3 == 0:","        return \"Fizz\"","    elif n % 5 == 0:","        return \"Buzz\"","    else:","        return str(n)")},
+ {id:"vowel", title:"The Vowel Lock", fn:"vowel_lock", sig:"vowel_lock(word)",
+  story:"A vault door shows a word in glowing letters. {c} reads the inscription: the code is the number of vowels, capitals included.",
+  task:"Return how many vowels (a, e, i, o, u) are in word, ignoring upper or lower case. y is not a vowel.",
+  starter:py("def vowel_lock(word):","    pass"),
+  tests:[[["Python"],1],[["AEIOU"],5],[["rhythm"],0],[["Banana"],3]],
+  hints:["Make the case consistent first: word.lower().","Loop over each character and check: if ch in \"aeiou\":","Count matches with a counter, or: return sum(1 for ch in word.lower() if ch in \"aeiou\")"],
+  logic:["word.lower() turns \"AEIOU\" into \"aeiou\" so one check covers both cases.","ch in \"aeiou\" tests whether the character is one of the five vowels.","Each match adds 1, and the total is returned."],
+  solution:py("def vowel_lock(word):","    count = 0","    for ch in word.lower():","        if ch in \"aeiou\":","            count += 1","    return count")},
+ {id:"stone", title:"The Source Stone", fn:"is_palindrome", sig:"is_palindrome(word)",
+  story:"At the bottom of the ruins, the Source Stone floats above a pedestal. It only answers to words that read the same in both directions. {c} is almost there.",
+  task:"Return True if word reads the same forwards and backwards, ignoring case. Otherwise return False.",
+  starter:py("def is_palindrome(word):","    pass"),
+  tests:[[["Level"],true],[["python"],false],[["Racecar"],true],[["a"],true]],
+  hints:["Ignore case first: w = word.lower().","Remember the Echo Bridge: w[::-1] is w reversed.","Compare them directly: return w == w[::-1]"],
+  logic:["Lowercasing makes \"Level\" and \"level\" equal.","w[::-1] reverses the string.","== already produces True or False, so you can return the comparison itself without an if."],
+  solution:py("def is_palindrome(word):","    w = word.lower()","    return w == w[::-1]")}
+];
+
+/* ================= Companions ================= */
+const COMPANIONS={
+ pip:{name:"Pip",kind:"python",color:"#3FA66B",tag:"Calm and curious",intro:"Slow is smooth, smooth is fast. Let's read the code together.",
+   cheer:["Smooth!","That's the one.","Exactly how I'd do it.","Nicely done."],oops:["Hmm, let's trace it again.","Close. Read the code once more.","No rush. Look at each line."]},
+ bolt:{name:"Bolt",kind:"robot",color:"#2E95A8",tag:"Logical, loves loops",intro:"BEEP. I process one step at a time. So will you.",
+   cheer:["Output matches. BEEP.","Logic verified.","Test passed.","Efficient!"],oops:["Unexpected output. Re-run the steps.","Bug detected. We can fix it.","Error is data. Try again."]},
+ mira:{name:"Mira",kind:"owl",color:"#8A62C9",tag:"Wise, reads every error",intro:"Every error message is a clue. I'll help you read them.",
+   cheer:["Wise choice.","You read that carefully.","Well reasoned.","Hoo! Correct."],oops:["The clue is in the details.","Let's read what Python really does.","A mistake is a lesson in disguise."]},
+ ember:{name:"Ember",kind:"fox",color:"#E2703A",tag:"Bold, tries things fast",intro:"Try fast, fail fast, learn fast. Ready when you are!",
+   cheer:["Yes! Nailed it!","Too quick for them!","Boom. Next!","That's the spirit!"],oops:["Shake it off, try again!","Almost had it!","Fail fast, learn fast!"]}
+};
+function avatarSvg(id){
+  const c=COMPANIONS[id].color, k="#15182A";
+  if(id==="pip") return `<svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="90" rx="30" ry="5" fill="${c}" opacity=".18"/><path d="M28 84 C14 84 14 66 32 66 L66 66 C84 66 84 48 66 48 L52 48" stroke="${c}" stroke-width="15" fill="none" stroke-linecap="round"/><path d="M28 84 C14 84 14 66 32 66 L66 66" stroke="#FFFFFF" stroke-opacity=".22" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="2 9"/><circle cx="46" cy="34" r="19" fill="${c}"/><circle cx="39" cy="31" r="6" fill="#FFFFFF"/><circle cx="54" cy="31" r="6" fill="#FFFFFF"/><circle cx="40" cy="32" r="3" fill="${k}"/><circle cx="55" cy="32" r="3" fill="${k}"/><path d="M40 43 Q46 47 52 43" stroke="${k}" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M46 52 L46 58 L42 62 M46 58 L50 62" stroke="#E2475A" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`;
+  if(id==="bolt") return `<svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="93" rx="26" ry="4" fill="${c}" opacity=".18"/><line x1="50" y1="9" x2="50" y2="22" stroke="${c}" stroke-width="4"/><circle cx="50" cy="8" r="5" fill="#F2C230"/><rect x="17" y="21" width="66" height="52" rx="16" fill="${c}"/><rect x="25" y="30" width="50" height="32" rx="9" fill="${k}"/><rect x="34" y="38" width="9" height="12" rx="3" fill="#9FF0FF"/><rect x="57" y="38" width="9" height="12" rx="3" fill="#9FF0FF"/><path d="M42 55 Q50 59 58 55" stroke="#9FF0FF" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="11" y="40" width="7" height="16" rx="3" fill="${c}"/><rect x="82" y="40" width="7" height="16" rx="3" fill="${c}"/><rect x="33" y="75" width="34" height="15" rx="6" fill="${c}" opacity=".85"/><circle cx="50" cy="82" r="3" fill="#F2C230"/></svg>`;
+  if(id==="mira") return `<svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="94" rx="26" ry="4" fill="${c}" opacity=".18"/><path d="M24 30 L30 12 L40 26 M76 30 L70 12 L60 26" fill="${c}" stroke="${c}" stroke-width="4" stroke-linejoin="round"/><ellipse cx="50" cy="58" rx="31" ry="34" fill="${c}"/><ellipse cx="50" cy="72" rx="18" ry="16" fill="#FFFFFF" opacity=".28"/><circle cx="37" cy="47" r="13" fill="#FFFFFF"/><circle cx="63" cy="47" r="13" fill="#FFFFFF"/><circle cx="38" cy="48" r="6" fill="${k}"/><circle cx="62" cy="48" r="6" fill="${k}"/><circle cx="40" cy="46" r="2" fill="#FFFFFF"/><circle cx="64" cy="46" r="2" fill="#FFFFFF"/><path d="M45 58 L55 58 L50 66 Z" fill="#F2A230"/><path d="M38 90 l-4 5 M44 91 l0 5 M62 90 l4 5 M56 91 l0 5" stroke="#F2A230" stroke-width="3" stroke-linecap="round"/></svg>`;
+  return `<svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="93" rx="28" ry="4" fill="${c}" opacity=".18"/><path d="M84 78 Q98 62 90 46 Q86 64 70 72 Z" fill="${c}"/><path d="M90 46 Q93 52 88 58 Q86 50 90 46Z" fill="#FFFFFF"/><path d="M18 44 L26 12 L42 30 L58 30 L74 12 L82 44 Q82 82 50 88 Q18 82 18 44Z" fill="${c}"/><path d="M27 20 L31 34 L37 30 Z M73 20 L69 34 L63 30 Z" fill="#FFFFFF" opacity=".55"/><path d="M28 60 Q50 92 72 60 Q60 68 50 68 Q40 68 28 60Z" fill="#FFFFFF"/><ellipse cx="37" cy="50" rx="4.5" ry="5.5" fill="${k}"/><ellipse cx="63" cy="50" rx="4.5" ry="5.5" fill="${k}"/><circle cx="38.5" cy="48" r="1.6" fill="#FFFFFF"/><circle cx="64.5" cy="48" r="1.6" fill="#FFFFFF"/><ellipse cx="50" cy="68" rx="5" ry="3.8" fill="${k}"/></svg>`;
+}
+const av=(id,cls="idle")=>`<span class="av ${cls}">${avatarSvg(id)}</span>`;
+const C=()=>COMPANIONS[P&&P.companion||"pip"];
+const say=t=>t.replace(/\{c\}/g,C().name);
+
+/* ================= Helpers ================= */
+const app=document.getElementById("app");
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const KW=new Set("def return if elif else for while in and or not None True False break continue pass import from as lambda yield class is".split(" "));
+const BI=new Set("print len range type list sorted bool int str float dict sum set enumerate max min".split(" "));
+function hl(src,fill){
+  const re=/(#.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|\b(\d+(?:\.\d+)?)\b|(___)|\b([A-Za-z_]\w*)\b/gm;
+  let out="",last=0,m;
+  while((m=re.exec(src))){
+    out+=esc(src.slice(last,m.index)); last=re.lastIndex;
+    if(m[1]) out+='<span class="tc">'+esc(m[1])+'</span>';
+    else if(m[2]) out+='<span class="ts">'+esc(m[2])+'</span>';
+    else if(m[3]) out+='<span class="tn">'+m[3]+'</span>';
+    else if(m[4]) out+= fill!=null ? '<span class="slot filled">'+esc(fill)+'</span>' : '<span class="slot">&nbsp;</span>';
+    else if(KW.has(m[5])) out+='<span class="tk">'+m[5]+'</span>';
+    else if(BI.has(m[5])) out+='<span class="tb">'+m[5]+'</span>';
+    else out+=m[5];
+  }
+  return out+esc(src.slice(last));
+}
+const ICON={
+ star:on=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path class="${on?"star-on":"star-off"}" d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z"/></svg>`,
+ heart:on=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path class="${on?"h-on":"h-off"}" d="M12 21s-7.3-4.5-9.6-9C.7 8.6 2.6 4.5 6.5 4.5c2.2 0 3.7 1.3 5.5 3.3 1.8-2 3.3-3.3 5.5-3.3 3.9 0 5.8 4.1 4.1 7.5C19.3 16.5 12 21 12 21z"/></svg>`,
+ energy:on=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path class="${on?"e-on":"e-off"}" d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>`,
+ close:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
+ back:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>`,
+ bolt:`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--sun)" d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>`,
+ flame:`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--bad)" d="M12 2s5 4.5 5 10a5 5 0 01-10 0c0-2.2 1-3.7 2-4.8 0 1.6.8 2.8 2 2.8 0-3.5 1-6 1-8z"/></svg>`,
+ home:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4.5v-6h-5v6H5a1 1 0 01-1-1z"/></svg>`,
+ chart:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>`,
+ user:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" stroke-linecap="round"/></svg>`,
+ google:`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 01-2.2 3.3v2.7h3.6c2-1.9 3.2-4.7 3.2-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1-3.7 1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0012 23z"/><path fill="#FBBC05" d="M5.8 14.1a6.6 6.6 0 010-4.2V7.1H2.1a11 11 0 000 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3 .6 4.2 1.6l3.1-3.1A11 11 0 002.1 7.1l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg>`
+};
+const codeBlock=(src,fill)=>`<div class="code"><div class="dots"><i></i><i></i><i></i></div><pre>${hl(src,fill)}</pre></div>`;
+let toastT=null;
+function toast(msg){let t=document.querySelector(".toast"); if(!t){t=document.createElement("div");t.className="toast";t.setAttribute("role","status");document.body.appendChild(t)} t.textContent=msg; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>t.hidden=true,3200)}
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=()=>rej(new Error("Could not load "+src));document.head.appendChild(s)})}
+function setWide(w,tabs){app.className=(w?"wide ":"")+(tabs?"withtabs":""); const t=document.querySelector(".tabs"); if(t&&!tabs) t.remove();}
+
+/* ================= Profile + storage ================= */
+const blankP=(name)=>({name:name||"Explorer",email:"",companion:null,xp:0,stars:{},streak:0,lastDay:"",solved:{},survBest:0,run:null,created:Date.now()});
+let P=null, MODE={kind:"guest"};
+const localKey=()=>MODE.kind==="firebase"?"pyquest.user."+MODE.uid:"pyquest.guest";
+function lsGet(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function lsDel(k){try{localStorage.removeItem(k)}catch(e){}}
+let syncT=null;
+function saveP(){
+  lsSet(localKey(),P);
+  if(MODE.kind==="firebase"&&fbDb){clearTimeout(syncT); syncT=setTimeout(()=>{
+    fbDb.collection("users").doc(MODE.uid).set(JSON.parse(JSON.stringify(P))).catch(()=>toast("Couldn't sync to the cloud. Progress is saved on this device."));
+  },700)}
+}
+const dayStr=d=>d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+function bumpStreak(){const t=dayStr(new Date()); if(P.lastDay===t) return; const y=new Date(); y.setDate(y.getDate()-1);
+  P.streak=(P.lastDay===dayStr(y))?P.streak+1:1; P.lastDay=t;}
+function liveStreak(){const y=new Date(); y.setDate(y.getDate()-1); return (P.lastDay===dayStr(new Date())||P.lastDay===dayStr(y))?P.streak:0}
+const LV=150;
+const level=()=>Math.floor(P.xp/LV)+1;
+const unlocked=i=>i===0||(P.stars[i-1]||0)>0;
+const totalStars=()=>Object.values(P.stars).reduce((a,b)=>a+b,0);
+
+/* ================= Firebase auth ================= */
+const FB_CFG=window.PYQUEST_FIREBASE_CONFIG||null;
+const FB_V="10.14.1", FB_BASE="https://cdn.jsdelivr.net/npm/firebase@"+FB_V+"/";
+let fbAuth=null, fbDb=null, fbReady=false;
+async function initFirebase(){
+  if(!FB_CFG||!FB_CFG.apiKey) return false;
+  try{
+    await loadScript(FB_BASE+"firebase-app-compat.js");
+    await loadScript(FB_BASE+"firebase-auth-compat.js");
+    await loadScript(FB_BASE+"firebase-firestore-compat.js");
+    firebase.initializeApp(FB_CFG); fbAuth=firebase.auth(); fbDb=firebase.firestore(); fbReady=true; return true;
+  }catch(e){ console.warn(e); return false; }
+}
+function authErr(e){
+  const m={"auth/invalid-email":"That email address doesn't look right.","auth/invalid-credential":"Email or password is incorrect.","auth/wrong-password":"Email or password is incorrect.","auth/user-not-found":"No account with that email. Switch to Create account.",
+   "auth/email-already-in-use":"An account with this email already exists. Switch to Sign in.","auth/weak-password":"Use at least 6 characters for the password.","auth/too-many-requests":"Too many attempts. Wait a minute and try again.",
+   "auth/network-request-failed":"No connection. Check your internet and try again.","auth/popup-closed-by-user":"Google sign-in was closed before finishing.","auth/unauthorized-domain":"This web address isn't allowed yet. Add it under Firebase → Authentication → Settings → Authorized domains.",
+   "auth/operation-not-allowed":"This sign-in method isn't turned on in Firebase yet.","auth/missing-email":"Enter your email first."};
+  return m[e&&e.code]||(e&&e.message)||"Something went wrong. Try again.";
+}
+async function loadCloudProfile(user){
+  MODE={kind:"firebase",uid:user.uid};
+  const cached=lsGet(localKey());
+  let data=null;
+  try{ const snap=await fbDb.collection("users").doc(user.uid).get(); if(snap.exists) data=snap.data(); }
+  catch(e){ toast("Offline. Using progress saved on this device."); data=cached; }
+  P=Object.assign(blankP((user.displayName||user.email||"Explorer").split("@")[0]), data||{});
+  P.email=user.email||"";
+  if(!data) saveP(); else lsSet(localKey(),P);
+}
+
+/* ================= Boot ================= */
+async function boot(){
+  const ok=await initFirebase();
+  if(ok){
+    fbAuth.getRedirectResult().catch(e=>toast(authErr(e)));
+    fbAuth.onAuthStateChanged(async u=>{
+      if(u){ await loadCloudProfile(u); afterLogin(); }
+      else if(lsGet("pyquest.session")==="guest"){ startGuest(); }
+      else authScreen();
+    });
+  } else {
+    if(lsGet("pyquest.session")==="guest") startGuest(); else authScreen();
+  }
+}
+function startGuest(name){
+  MODE={kind:"guest"};
+  P=lsGet("pyquest.guest");
+  if(!P){ P=blankP(name);
+    const old=lsGet("pyquest.v1"); // progress from the first PyQuest version
+    if(old){ P.xp=old.xp||0; P.stars=old.stars||{}; P.streak=old.streak||0; P.lastDay=old.lastDay||""; }
+  } else { P=Object.assign(blankP(),P); if(name) P.name=name; }
+  lsSet("pyquest.session","guest"); saveP(); afterLogin();
+}
+function afterLogin(){ if(!P.companion) pickScreen(true); else home(); }
+
+/* ================= Auth screen ================= */
+let authMode="in";
+function authScreen(){
+  setWide(false,false);
+  const ids=Object.keys(COMPANIONS);
+  app.innerHTML=`<div class="auth">
+    <div class="hero-parade">${ids.map(i=>av(i)).join("")}</div>
+    <div class="logo"><span class="prompt">&gt;&gt;&gt; import adventure</span><h1>Py<span>Quest</span></h1>
+      <p>Learn Python with a companion. Story lessons and real code quests.</p></div>
+    ${fbReady?`<form class="card" id="authf" novalidate>
+      <div class="seg" role="group" aria-label="Account">
+        <button type="button" id="m-in" aria-pressed="${authMode==="in"}">Sign in</button>
+        <button type="button" id="m-up" aria-pressed="${authMode==="up"}">Create account</button></div>
+      ${authMode==="up"?`<div class="field"><label for="a-name">Your name</label><input id="a-name" autocomplete="name" placeholder="Veeru"></div>`:""}
+      <div class="field"><label for="a-email">Email</label><input id="a-email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="you@gmail.com or you@icloud.com"></div>
+      <div class="field"><label for="a-pass">Password</label><input id="a-pass" type="password" autocomplete="${authMode==="up"?"new-password":"current-password"}" placeholder="At least 6 characters"></div>
+      <p class="err" id="a-err"></p><p class="ok-msg" id="a-ok"></p>
+      <button class="btn btn-blue btn-full" type="submit" id="a-go">${authMode==="up"?"Create account":"Sign in"}</button>
+      ${authMode==="in"?`<button type="button" class="linkbtn" id="a-forgot" style="justify-self:center">Forgot password?</button>`:""}
+      <div class="or">or</div>
+      <button type="button" class="btn btn-ghost btn-full gbtn" id="a-google">${ICON.google}Continue with Google</button>
+    </form>`:""}
+    <div class="card">
+      <div class="field"><label for="g-name">${fbReady?"Just trying it out?":"Your name"}</label><input id="g-name" autocomplete="nickname" placeholder="Explorer"></div>
+      <button class="btn ${fbReady?"btn-ghost":"btn-blue"} btn-full" id="g-go">Play as guest</button>
+      <p class="note">Guest progress stays on this device.${fbReady?" Create an account to keep it everywhere.":""}</p>
+    </div>
+    ${fbReady?"":`<p class="note">Email sign-in isn't switched on for this copy of PyQuest yet.</p>`}
+  </div>`;
+  document.getElementById("g-go").onclick=()=>startGuest(document.getElementById("g-name").value.trim()||"Explorer");
+  if(!fbReady) return;
+  document.getElementById("m-in").onclick=()=>{authMode="in";authScreen()};
+  document.getElementById("m-up").onclick=()=>{authMode="up";authScreen()};
+  const err=document.getElementById("a-err"), okm=document.getElementById("a-ok");
+  document.getElementById("authf").onsubmit=async ev=>{
+    ev.preventDefault(); err.textContent=""; okm.textContent="";
+    const email=document.getElementById("a-email").value.trim(), pass=document.getElementById("a-pass").value;
+    const btn=document.getElementById("a-go"); btn.disabled=true;
+    try{
+      if(authMode==="up"){
+        const cred=await fbAuth.createUserWithEmailAndPassword(email,pass);
+        const nm=(document.getElementById("a-name").value||"").trim();
+        if(nm){ await cred.user.updateProfile({displayName:nm}); lsSet("pyquest.pendingName",nm); }
+      } else await fbAuth.signInWithEmailAndPassword(email,pass);
+      lsDel("pyquest.session");
+    }catch(e){ err.textContent=authErr(e); btn.disabled=false; }
+  };
+  const f=document.getElementById("a-forgot");
+  if(f) f.onclick=async()=>{ err.textContent=""; const email=document.getElementById("a-email").value.trim();
+    try{ await fbAuth.sendPasswordResetEmail(email); okm.textContent="Reset link sent. Check your inbox (and spam)."; }catch(e){ err.textContent=authErr(e); } };
+  document.getElementById("a-google").onclick=async()=>{
+    err.textContent=""; const prov=new firebase.auth.GoogleAuthProvider();
+    const standalone=window.navigator.standalone||matchMedia("(display-mode: standalone)").matches;
+    try{ if(standalone) await fbAuth.signInWithRedirect(prov); else await fbAuth.signInWithPopup(prov); lsDel("pyquest.session"); }
+    catch(e){ err.textContent=authErr(e); }
+  };
+}
+
+/* ================= Companion picker ================= */
+function pickScreen(first){
+  setWide(false,false);
+  const pn=lsGet("pyquest.pendingName"); if(pn&&first){ P.name=pn; lsDel("pyquest.pendingName"); }
+  let sel=P.companion||null;
+  const draw=()=>{
+    app.innerHTML=`
+    ${first?"":`<button class="back" id="pk-back">${ICON.back}Profile</button>`}
+    <div style="display:grid;gap:8px;margin-top:${first?18:6}px">
+      <span class="label">${first?"Welcome, "+esc(P.name):"Change companion"}</span>
+      <h2 style="font-size:30px;font-weight:800">Choose your companion</h2>
+      <p class="muted">They guide your lessons, react to your answers and give you hints in Survival mode.</p></div>
+    <div class="pick-grid" style="margin-top:18px">${Object.entries(COMPANIONS).map(([id,c])=>`
+      <button class="pick" style="--cc:${c.color}" data-id="${id}" aria-pressed="${sel===id}">
+        ${av(id,sel===id?"happy":"idle")}<h3>${c.name}</h3><p>${c.tag}</p></button>`).join("")}</div>
+    <p class="quote" style="margin-top:16px">${sel?"“"+esc(COMPANIONS[sel].intro)+"”":"Tap a companion to meet them."}</p>
+    <button class="btn btn-blue btn-full" id="pk-go" style="margin-top:14px" ${sel?"":"disabled"}>${sel?"Adventure with "+COMPANIONS[sel].name:"Pick a companion"}</button>`;
+    app.querySelectorAll(".pick").forEach(b=>b.onclick=()=>{sel=b.dataset.id;draw()});
+    document.getElementById("pk-go").onclick=()=>{P.companion=sel; saveP(); home();};
+    const bk=document.getElementById("pk-back"); if(bk) bk.onclick=profile;
+  };
+  draw();
+}
+
+/* ================= Shell (top bar + tabs) ================= */
+function tabs(cur){
+  let t=document.querySelector(".tabs");
+  if(!t){ t=document.createElement("nav"); t.className="tabs"; t.setAttribute("aria-label","Main"); document.body.appendChild(t); }
+  t.innerHTML=`<div class="in">${[["home","Home",ICON.home],["progress","Progress",ICON.chart],["profile","Profile",ICON.user]].map(([k,l,i])=>
+    `<button class="tab" data-t="${k}" ${cur===k?'aria-current="page"':""}>${i}${l}</button>`).join("")}</div>`;
+  t.querySelectorAll(".tab").forEach(b=>b.onclick=()=>({home,progress,profile})[b.dataset.t]());
+}
+function topBar(){
+  return `<header class="top">
+    <div class="hello">${av(P.companion)}<div class="txt"><span class="label">Level ${level()}</span><h1>Hi, ${esc(P.name)}</h1></div></div>
+    <div class="stats"><span class="chip" title="Experience points">${ICON.bolt}${P.xp}</span><span class="chip" title="Day streak">${ICON.flame}${liveStreak()}</span></div>
+  </header>`;
+}
+
+/* ================= Home ================= */
+function home(){
+  setWide(false,true); tabs("home"); stopAll();
+  const doneUnits=Object.keys(P.stars).filter(k=>P.stars[k]>0).length;
+  const cleared=Object.keys(P.solved).length;
+  const lines=[ `Ready when you are, ${P.name}.`, doneUnits===0?"Story mode is a good place to start. I'll explain every answer.":`${doneUnits} of ${UNITS.length} story units done. Nice pace.`, P.run?`We left a quest in chamber ${P.run.depth+1}. Want to go back?`:"" ].filter(Boolean);
+  const inLv=P.xp%LV;
+  app.innerHTML=`${topBar()}
+  <div class="speak">${av(P.companion)}<div class="bubble"><b>${C().name}:</b> ${esc(lines[lines.length-1])}</div></div>
+  <div class="modes">
+    <button class="mode mode-story" id="go-story">
+      <div class="deco">for unit in path:\n    learn(unit)</div>
+      <span class="label" style="color:inherit;opacity:.85">Mode 1</span>
+      <h2>Story mode</h2><p>Seven units on a course path, from variables to dictionaries, with the logic explained after every question.</p>
+      <div class="meta"><span>${totalStars()}/${UNITS.length*3} stars</span><span>${doneUnits}/${UNITS.length} units</span></div>
+    </button>
+    <button class="mode mode-surv" id="go-surv">
+      <div class="deco">while energy &gt; 0:\n    explore()</div>
+      <span class="label" style="color:var(--cave-muted)">Mode 2</span>
+      <h2>Survival mode</h2><p>${C().name} is searching the Ruins of Recursion. Write real Python to clear each chamber. Ask for hints when stuck.</p>
+      <div class="meta"><span>${cleared}/${QUESTS.length} chambers</span><span>best run: ${P.survBest}</span>${P.run?`<span style="color:var(--sun)">run in progress</span>`:""}</div>
+    </button>
+  </div>
+  <div class="lvl"><div class="row"><b>Level ${level()}</b><span class="muted" style="font-size:14px">${LV-inLv} XP to level ${level()+1}</span></div>
+    <div class="bar"><i style="width:${inLv/LV*100}%"></i></div></div>`;
+  document.getElementById("go-story").onclick=storyPath;
+  document.getElementById("go-surv").onclick=survivalLobby;
+  window.scrollTo(0,0);
+}
+
+/* ================= Progress ================= */
+function progress(){
+  setWide(false,true); tabs("progress"); stopAll();
+  const cleared=Object.keys(P.solved).length;
+  app.innerHTML=`${topBar()}
+  <div class="section-head"><h2>Your progress</h2><span class="label">${MODE.kind==="firebase"?"synced":"this device"}</span></div>
+  <div class="tiles">
+    <div class="tile"><b>${level()}</b><span>level</span></div>
+    <div class="tile"><b>${P.xp}</b><span>XP</span></div>
+    <div class="tile"><b>${liveStreak()}</b><span>day streak</span></div>
+    <div class="tile"><b>${totalStars()}<small class="muted" style="font-size:14px">/${UNITS.length*3}</small></b><span>stars</span></div>
+    <div class="tile"><b>${cleared}<small class="muted" style="font-size:14px">/${QUESTS.length}</small></b><span>chambers</span></div>
+    <div class="tile"><b>${P.survBest}</b><span>best run</span></div>
+  </div>
+  <div class="section-head"><h2>Story mode</h2></div>
+  <div class="list">${UNITS.map((u,i)=>{const s=P.stars[i]||0;return `<div class="row-item"><div class="t"><h3>${i+1}. ${u.title}</h3><p>${u.blurb}</p></div>
+    ${unlocked(i)?`<span class="stars" aria-label="${s} of 3 stars">${[1,2,3].map(n=>ICON.star(n<=s)).join("")}</span>`:`<span class="pill dim">locked</span>`}</div>`}).join("")}</div>
+  <div class="section-head"><h2>Survival chambers</h2></div>
+  <div class="list">${QUESTS.map((q,i)=>{const s=P.solved[q.id];return `<div class="row-item"><div class="t"><h3>${i+1}. ${q.title}</h3><p><code>${esc(q.sig)}</code></p></div>
+    ${s?`<span class="pill ${s.hints===0?"good":"sun"}">${s.revealed?"solution shown":s.hints===0?"no hints":s.hints+" hint"+(s.hints>1?"s":"")}</span>`:`<span class="pill dim">not cleared</span>`}</div>`}).join("")}</div>`;
+  window.scrollTo(0,0);
+}
+
+/* ================= Profile ================= */
+let resetArmed=false;
+function profile(){
+  setWide(false,true); tabs("profile"); stopAll();
+  app.innerHTML=`<div class="prof-head">${av(P.companion)}<div><span class="label">${MODE.kind==="firebase"?"Signed in":"Guest"}</span><h1>${esc(P.name)}</h1>
+    <p class="muted">${MODE.kind==="firebase"?esc(P.email):"Progress saved on this device only"}</p></div></div>
+  <div class="section-head"><h2>Companion</h2></div>
+  <div class="row-item"><div class="t"><h3>${C().name}</h3><p>${C().tag}</p></div><button class="btn btn-ghost btn-sm" id="pf-comp">Change</button></div>
+  <div class="section-head"><h2>Account</h2></div>
+  <div class="list">
+    <div class="row-item"><div class="t"><h3>Display name</h3><p>Shown on your home screen</p></div><button class="btn btn-ghost btn-sm" id="pf-name">Edit</button></div>
+    <div class="row-item" id="pf-name-row" hidden><div class="field" style="flex:1"><label for="pf-name-in">New name</label><input id="pf-name-in" value="${esc(P.name)}" maxlength="30"></div><button class="btn btn-blue btn-sm" id="pf-name-save" style="align-self:end">Save</button></div>
+    <button class="btn btn-ghost btn-full" id="pf-out">${MODE.kind==="firebase"?"Sign out":"Leave guest mode"}</button>
+  </div>
+  <div style="margin-top:24px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <span class="muted" style="font-size:13px">PyQuest · Python ${"3"} in your browser</span>
+    <button class="linkbtn ${resetArmed?"warn":""}" id="pf-reset">${resetArmed?"Tap again to erase all progress":"Reset progress"}</button></div>`;
+  document.getElementById("pf-comp").onclick=()=>pickScreen(false);
+  document.getElementById("pf-name").onclick=()=>{document.getElementById("pf-name-row").hidden=false;document.getElementById("pf-name-in").focus()};
+  document.getElementById("pf-name-save").onclick=()=>{const v=document.getElementById("pf-name-in").value.trim(); if(v){P.name=v;saveP();toast("Name updated");profile();}};
+  document.getElementById("pf-out").onclick=async()=>{
+    lsDel("pyquest.session"); const t=document.querySelector(".tabs"); if(t) t.remove();
+    if(MODE.kind==="firebase"){ clearTimeout(syncT); await fbDb.collection("users").doc(MODE.uid).set(JSON.parse(JSON.stringify(P))).catch(()=>{}); await fbAuth.signOut(); }
+    else authScreen();
+  };
+  document.getElementById("pf-reset").onclick=()=>{
+    if(resetArmed){ const keep={name:P.name,email:P.email,companion:P.companion}; P=Object.assign(blankP(),keep); saveP(); resetArmed=false; toast("Progress reset"); }
+    else { resetArmed=true; setTimeout(()=>{ if(resetArmed){resetArmed=false; if(document.getElementById("pf-reset")) profile();} },4000); }
+    profile();
+  };
+  window.scrollTo(0,0);
+}
+
+/* ================= Story mode ================= */
+function storyPath(){
+  setWide(false,true); tabs("home"); stopAll();
+  const nextIdx=UNITS.findIndex((u,i)=>unlocked(i)&&!P.stars[i]);
+  app.innerHTML=`<button class="back" id="sp-back">${ICON.back}Home</button>
+  <div class="section-head" style="margin-top:6px"><h2>Story mode</h2><span class="label">${totalStars()} / ${UNITS.length*3} stars</span></div>
+  <div class="speak" style="margin:0 0 18px">${av(P.companion)}<div class="bubble"><b>${C().name}:</b> ${nextIdx>=0?`Next up: ${esc(UNITS[nextIdx].title)}. Three hearts per unit, and I'll explain every answer.`:"Every unit is done. Replay any unit for three stars, or head into Survival mode."}</div></div>
+  <ol class="track">
+    ${UNITS.map((u,i)=>{const st=P.stars[i]||0, op=unlocked(i);
+      const cls=st?"done":(i===nextIdx?"next":(op?"open":""));
+      return `<li><button class="unit ${cls}" data-u="${i}" ${op?"":"disabled"} aria-label="Unit ${i+1}: ${u.title}${op?"":" (locked)"}">
+        <span class="node">${i+1}</span>
+        <span class="txt"><h3>${u.title}</h3><p>${op?u.blurb:"Earn a star in the unit above to unlock"}</p></span>
+        <span class="stars">${[1,2,3].map(n=>ICON.star(n<=st)).join("")}</span>
+      </button></li>`}).join("")}
+  </ol>`;
+  document.getElementById("sp-back").onclick=home;
+  app.querySelectorAll(".unit").forEach(b=>b.onclick=()=>startLesson(+b.dataset.u));
+  window.scrollTo(0,0);
+}
+const PROMPTS={out:"What does this print?",fill:"Fill in the blank",order:"Put the lines in order"};
+let L=null;
+function startLesson(u){
+  setWide(false,false);
+  const qs=UNITS[u].qs.map(q=>({...q}));
+  L={u,queue:qs,total:qs.length,done:0,hearts:3,mistakes:0,xp:0,firstTry:0};
+  setupQ(); renderLesson();
+}
+function setupQ(){
+  const q=L.queue[0]; L.sel=null; L.checked=false; L.correct=false;
+  if(q.t==="order"){ L.picked=[]; let p; do{p=shuffle(q.lines.map((_,i)=>i))}while(p.every((v,i)=>v===i)); L.pool=p; }
+  else L.opts=shuffle(q.opts);
+}
+function feedback(q,chosen,correct){
+  const ans=q.t==="order"?null:q.opts[q.a];
+  let h=`<div class="fb-head">${av(P.companion,correct?"happy":"sad")}<div><h3>${correct?"Correct!":"Not quite"}</h3><p class="says">${C().name}: ${esc(pick(correct?C().cheer:C().oops))}</p></div></div>`;
+  if(!correct){
+    if(chosen!=null && q.trap && q.trap[chosen]) h+=`<p class="trap"><b>Why <code>${esc(chosen)}</code> is wrong:</b> ${esc(q.trap[chosen])}</p>`;
+    if(ans!=null) h+=`<p>Correct answer: <code>${esc(ans)}</code></p>`;
+    else h+=`<p>Correct order:</p><div class="mini"><pre>${hl(q.lines.join("\n"))}</pre></div>`;
+  }
+  h+=`<div class="logic"><span class="label">The logic</span><ol>${q.steps.map(x=>`<li>${esc(x)}</li>`).join("")}</ol></div>`;
+  return `<div class="fb">${h}</div>`;
+}
+function renderLesson(){
+  const q=L.queue[0], pct=Math.round(L.done/L.total*100);
+  const wide=q.t!=="order" && L.opts.some(o=>o.length>9);
+  let body="";
+  if(q.t==="order"){
+    body=`<div class="answer">${L.picked.map((li,k)=>`<button class="ln" data-k="${k}" ${L.checked?"disabled":""}>${hl(q.lines[li])}</button>`).join("")}</div>
+      <div class="pool">${L.pool.map((li,k)=>`<button class="ln" data-p="${k}" ${L.checked?"disabled":""}>${hl(q.lines[li])}</button>`).join("")}</div>`;
+  } else {
+    const ans=q.opts[q.a];
+    body=codeBlock(q.code, q.t==="fill"&&L.sel!=null?L.sel:null)+
+     `<div class="opts ${wide?"wide":""}">${L.opts.map((o,k)=>{let c="";
+        if(L.checked){ if(o===ans) c="right"; else if(o===L.sel) c="wrong"; } else if(o===L.sel) c="sel";
+        return `<button class="opt ${c}" data-o="${k}" ${L.checked?"disabled":""}>${esc(o)}</button>`}).join("")}</div>`;
+  }
+  const ready = q.t==="order" ? L.picked.length===q.lines.length : L.sel!=null;
+  const dock = !L.checked
+    ? `<div class="dock"><div class="in"><button class="btn btn-blue btn-full" id="check" ${ready?"":"disabled"}>Check</button></div></div>`
+    : `<div class="dock ${L.correct?"ok":"no"}" role="status"><div class="in">${feedback(q,q.t==="order"?null:L.sel,L.correct)}
+        <button class="btn btn-full ${L.correct?"btn-ok":"btn-no"}" id="next">Continue</button></div></div>`;
+  app.innerHTML=`
+   <div class="lbar">
+     <button class="x" id="quit" aria-label="Quit lesson">${ICON.close}</button>
+     <div class="prog" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+     <div class="hearts" aria-label="${L.hearts} hearts left">${[0,1,2].map(i=>ICON.heart(i<L.hearts)).join("")}</div>
+   </div>
+   <div class="qtype"><span class="label">${UNITS[L.u].title}</span>
+     <h2 class="qtitle">${q.q?esc(q.q):PROMPTS[q.t]}${q.retry?'<span class="retry">RETRY</span>':""}</h2></div>
+   ${body}<div class="spacer"></div>${dock}`;
+  document.getElementById("quit").onclick=storyPath;
+  app.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{L.sel=L.opts[+b.dataset.o]; renderLesson();});
+  app.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{L.picked.push(L.pool.splice(+b.dataset.p,1)[0]); renderLesson();});
+  app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{L.pool.push(L.picked.splice(+b.dataset.k,1)[0]); renderLesson();});
+  const c=document.getElementById("check"); if(c) c.onclick=check;
+  const n=document.getElementById("next"); if(n){ n.onclick=advance; n.focus({preventScroll:true}); }
+}
+function check(){
+  const q=L.queue[0];
+  L.correct = q.t==="order" ? L.picked.every((v,i)=>v===i) : L.sel===q.opts[q.a];
+  L.checked=true;
+  if(L.correct){ L.xp+=q.retry?5:10; if(!q.retry) L.firstTry++; } else { L.hearts--; L.mistakes++; }
+  renderLesson();
+}
+function advance(){
+  const q=L.queue.shift();
+  if(L.correct) L.done++; else L.queue.push({...q,retry:true});
+  if(L.hearts<=0) return lessonEnd(false);
+  if(!L.queue.length) return lessonEnd(true);
+  setupQ(); renderLesson(); window.scrollTo(0,0);
+}
+function lessonEnd(won){
+  let stars=0, bonus=0;
+  if(won){ stars=L.mistakes===0?3:L.mistakes===1?2:1; if(stars===3) bonus=20;
+    P.stars[L.u]=Math.max(P.stars[L.u]||0,stars); P.xp+=L.xp+bonus; bumpStreak(); saveP(); }
+  const acc=Math.round(L.firstTry/L.total*100), hasNext=won&&L.u+1<UNITS.length, u=L.u;
+  app.innerHTML=`<div class="result">
+    ${av(P.companion,won?"happy":"sad")}
+    <span class="label">${UNITS[u].title}</span>
+    <div class="bigstars">${[1,2,3].map(n=>ICON.star(n<=stars)).join("")}</div>
+    <h2>${won?(stars===3?"Flawless run":"Unit complete"):"Out of hearts"}</h2>
+    <p class="muted" style="max-width:34ch">${C().name}: ${won?(stars===3?"No mistakes. That's a 20 XP bonus.":"Replay without a mistake for three stars."):"Each wrong answer costs a heart. Read the logic notes and try again."}</p>
+    <div class="tiles">
+      <div class="tile"><b>+${won?L.xp+bonus:0}</b><span>XP</span></div>
+      <div class="tile"><b>${acc}%</b><span>first try</span></div>
+      <div class="tile"><b>${liveStreak()}</b><span>day streak</span></div>
+    </div>
+    <div class="btns">
+      ${hasNext?`<button class="btn btn-blue btn-full" id="nx">Next unit: ${UNITS[u+1].title}</button>`:""}
+      <button class="btn ${hasNext?"btn-ghost":"btn-blue"} btn-full" id="again">${won?"Replay unit":"Try again"}</button>
+      <button class="btn btn-ghost btn-full" id="hm">Back to course path</button>
+    </div></div>`;
+  if(hasNext) document.getElementById("nx").onclick=()=>startLesson(u+1);
+  document.getElementById("again").onclick=()=>startLesson(u);
+  document.getElementById("hm").onclick=storyPath;
+  window.scrollTo(0,0);
+}
+
+/* ================= Python engine (Skulpt) ================= */
+const SK_BASE="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/";
+let skP=null, skReady=false;
+function loadSkulpt(){
+  if(!skP) skP=loadScript(SK_BASE+"skulpt.min.js").then(()=>loadScript(SK_BASE+"skulpt-stdlib.js")).then(()=>{skReady=true; markEngine();}).catch(e=>{skP=null; throw e;});
+  return skP;
+}
+function markEngine(){const e=document.getElementById("eng"); if(e){e.classList.toggle("ready",skReady); e.lastChild.textContent=skReady?" Python ready":" loading Python…";}}
+function skRead(f){ if(!Sk.builtinFiles||!Sk.builtinFiles.files[f]) throw new Error("File not found: '"+f+"'"); return Sk.builtinFiles.files[f]; }
+function fmtErr(e){ const s=e&&e.toString?e.toString():String(e); return s.replace(/ on line (\d+)/," (line $1)"); }
+function canon(v){ if(Array.isArray(v)) return "["+v.map(canon).join(",")+"]"; if(v&&typeof v==="object"){return "{"+Object.keys(v).sort().map(k=>JSON.stringify(k)+":"+canon(v[k])).join(",")+"}"} return JSON.stringify(v===undefined?null:v); }
+function pyRepr(v){
+  if(v===null||v===undefined) return "None"; if(v===true) return "True"; if(v===false) return "False";
+  if(typeof v==="string") return "'"+v.replace(/\\/g,"\\\\").replace(/'/g,"\\'")+"'";
+  if(Array.isArray(v)) return "["+v.map(pyRepr).join(", ")+"]";
+  if(typeof v==="object") return "{"+Object.keys(v).map(k=>pyRepr(k)+": "+pyRepr(v[k])).join(", ")+"}";
+  return String(v);
+}
+const callStr=(q,args)=>q.fn+"("+args.map(pyRepr).join(", ")+")";
+
+/* ================= Survival mode ================= */
+let Q=null;
+function stopAll(){ Q=null; }
+function survivalLobby(){
+  setWide(false,true); tabs("home");
+  const best=P.survBest, cps=[0,3,6].filter(c=>c===0||best>=c);
+  app.innerHTML=`<button class="back" id="sv-back">${ICON.back}Home</button>
+  <div class="cave-wrap lobby" style="margin-top:6px">
+    <div class="lobby-hero">${av(P.companion)}<div><span class="label">Survival mode</span><h2 style="font-size:28px;font-weight:800">Ruins of Recursion</h2></div></div>
+    <div class="cave-bubble"><span><b>${C().name}:</b> The Source Stone is hidden at the bottom of the ruins, ten chambers down. Each chamber has a puzzle only code can solve. You write the Python, I'll give hints when you need them.</span></div>
+    <div class="chambers" aria-label="Chambers cleared">${QUESTS.map((q,i)=>`<div class="chamber ${P.solved[q.id]?"cleared":""}" title="${esc(q.title)}">${i+1}</div>`).join("")}</div>
+    <div class="list" style="gap:6px">
+      <p style="font-size:14px;color:var(--cave-muted)">You start with 5 energy. A wrong answer costs 1. Code errors and hints are free, but hints lower your gem reward. Best run: <b style="color:var(--sun)">${best}</b> chambers.</p>
+    </div>
+    ${P.run?`<button class="btn btn-sun btn-full" id="sv-cont">Continue run · chamber ${P.run.depth+1} · ${P.run.energy} energy</button>`:""}
+    <div style="display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+      ${cps.map(c=>`<button class="btn ${P.run||c?"btn-ghost":"btn-sun"} btn-full" data-cp="${c}" style="${P.run||c?"background:transparent;border-color:var(--cave-2);color:var(--cave-ink)":""}">${c===0?(P.run?"Start new run":"Start run"):"Start at chamber "+(c+1)}</button>`).join("")}
+    </div>
+  </div>`;
+  document.getElementById("sv-back").onclick=home;
+  const ct=document.getElementById("sv-cont"); if(ct) ct.onclick=openQuest;
+  app.querySelectorAll("[data-cp]").forEach(b=>b.onclick=()=>{P.run={depth:+b.dataset.cp,energy:5,gems:0}; saveP(); openQuest();});
+  loadSkulpt().catch(()=>{});
+  window.scrollTo(0,0);
+}
+function openQuest(){
+  const q=QUESTS[P.run.depth];
+  Q={q,hints:0,solved:false,revealed:false};
+  setWide(true,false);
+  const ex=q.tests.slice(0,2).map(([a,e])=>`<div>${esc(callStr(q,a))}  →  ${esc(pyRepr(e))}</div>`).join("");
+  app.innerHTML=`
+  <div class="cave-wrap">
+    <div class="sbar">
+      <button class="x" id="sv-quit" aria-label="Leave the ruins" style="color:var(--cave-muted)">${ICON.close}</button>
+      <span class="depth">Chamber ${P.run.depth+1}<span style="color:var(--cave-muted);font-size:15px"> / ${QUESTS.length}</span></span>
+      <span style="flex:1"></span>
+      <span class="gems" title="Gems this run">◆ ${P.run.gems}</span>
+      <span class="energy" id="energy" aria-label="${P.run.energy} energy">${[0,1,2,3,4].map(i=>ICON.energy(i<P.run.energy)).join("")}</span>
+    </div>
+    <div class="cave-speak">${av(P.companion)}<div class="cave-bubble"><span class="label">${esc(q.title)}</span><span><b>${C().name}:</b> ${esc(say(q.story))}</span></div></div>
+  </div>
+  <div class="qgrid">
+    <div class="qside">
+      <div class="task"><span class="label">Your mission</span><h3>${esc(q.task)}</h3>
+        <div class="sig">def ${esc(q.sig)}:</div>
+        <div class="examples"><span class="label" style="font-family:var(--f-body)">Examples</span>${ex}</div></div>
+      <div class="hints" id="hints"></div>
+      <button class="btn btn-ghost btn-full" id="hint-btn"></button>
+      <div id="result"></div>
+    </div>
+    <div class="ws">
+      <div class="ws-head"><span>workspace.py</span><span class="eng ${skReady?"ready":""}" id="eng"><i></i> ${skReady?"Python ready":"loading Python…"}</span></div>
+      <label for="editor" class="label" hidden>Code editor</label>
+      <textarea id="editor" class="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Python code editor"></textarea>
+      <div class="keys" id="keys">${["⇥ tab","()",":","[]","\"\"","=","==","+=","%","_","return ","for ","if "].map(k=>`<button type="button" data-k="${esc(k)}">${esc(k.trim())}</button>`).join("")}</div>
+      <div class="ws-actions"><button class="btn btn-sun" id="run">Run tests</button><button class="btn btn-ghost btn-sm" id="reset-code">Reset code</button></div>
+      <div class="console" id="console" aria-live="polite"></div>
+    </div>
+  </div>`;
+  const ed=document.getElementById("editor");
+  ed.value=q.starter;
+  wireEditor(ed);
+  document.getElementById("sv-quit").onclick=()=>{ saveP(); survivalLobby(); };
+  document.getElementById("run").onclick=runTests;
+  document.getElementById("reset-code").onclick=()=>{ ed.value=q.starter; ed.focus(); };
+  document.getElementById("hint-btn").onclick=nextHint;
+  drawHints();
+  loadSkulpt().catch(()=>{ const e=document.getElementById("eng"); if(e) e.lastChild.textContent=" Python failed to load"; });
+  window.scrollTo(0,0);
+}
+function wireEditor(ed){
+  const insert=(txt,caretBack=0)=>{
+    const s=ed.selectionStart, e=ed.selectionEnd;
+    ed.setRangeText(txt,s,e,"end");
+    if(caretBack){ const p=ed.selectionStart-caretBack; ed.setSelectionRange(p,p); }
+    ed.focus();
+  };
+  ed.addEventListener("keydown",ev=>{
+    if(ev.key==="Tab"){ ev.preventDefault(); insert("    "); }
+    else if(ev.key==="Enter"){
+      ev.preventDefault();
+      const s=ed.selectionStart, lineStart=ed.value.lastIndexOf("\n",s-1)+1, line=ed.value.slice(lineStart,s);
+      let ind=(line.match(/^ */)||[""])[0]; if(/:\s*$/.test(line)) ind+="    ";
+      insert("\n"+ind);
+    }
+  });
+  document.getElementById("keys").querySelectorAll("button").forEach(b=>{
+    b.addEventListener("mousedown",e=>e.preventDefault());
+    b.onclick=()=>{ const k=b.dataset.k;
+      if(k==="⇥ tab") insert("    "); else if(k==="()"||k==="[]"||k==="\"\"") insert(k,1); else insert(k); };
+  });
+}
+function drawHints(){
+  const q=Q.q, h=document.getElementById("hints"), b=document.getElementById("hint-btn");
+  h.innerHTML=q.hints.slice(0,Q.hints).map((t,i)=>`<div class="hint">${av(P.companion,i===Q.hints-1?"happy":"")}<div><b>Hint ${i+1} of ${q.hints.length}</b>${esc(t)}</div></div>`).join("")
+    +(Q.revealed?`<div class="hint">${av(P.companion)}<div><b>Solution</b>Here's one way to write it. Read it line by line, then run it.<div class="mini"><pre>${hl(q.solution)}</pre></div></div></div>`:"");
+  if(Q.solved){ b.hidden=true; return; }
+  b.hidden=false;
+  if(Q.hints<q.hints.length){ b.textContent=`Ask ${C().name} for a hint (${q.hints.length-Q.hints} left)`; b.disabled=false; }
+  else if(!Q.revealed){ b.textContent="Show the solution (costs 1 energy)"; b.disabled=false; }
+  else { b.hidden=true; }
+}
+function nextHint(){
+  if(!Q) return;
+  if(Q.hints<Q.q.hints.length){ Q.hints++; drawHints(); }
+  else if(!Q.revealed){ Q.revealed=true; P.run.energy--; drawEnergy(); saveP(); drawHints();
+    if(P.run.energy<=0) return setTimeout(runOver,300); }
+  const hs=document.querySelectorAll(".hint"); if(hs.length) hs[hs.length-1].scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function drawEnergy(){ const e=document.getElementById("energy"); if(e){ e.innerHTML=[0,1,2,3,4].map(i=>ICON.energy(i<P.run.energy)).join(""); e.setAttribute("aria-label",P.run.energy+" energy"); } }
+async function runTests(){
+  if(!Q||Q.solved) return;
+  const q=Q.q, con=document.getElementById("console"), btn=document.getElementById("run"), code=document.getElementById("editor").value;
+  btn.disabled=true; con.innerHTML=`<span class="h">Running</span><pre>${skReady?"Running your code…":"Loading the Python engine (first run takes a few seconds)…"}</pre>`;
+  try{ await loadSkulpt(); }catch(e){ con.innerHTML=`<span class="h">Engine</span><pre class="errbox">Couldn't load the Python engine. Check your connection and tap Run again.</pre>`; btn.disabled=false; return; }
+  let out=""; Sk.configure({output:t=>{out+=t}, read:skRead, __future__:Sk.python3, execLimit:4000});
+  let mod;
+  try{ mod=await Sk.misceval.asyncToPromise(()=>Sk.importMainWithBody("<stdin>",false,code,true)); }
+  catch(e){ return codeError(fmtErr(e),out); }
+  const fn=mod.$d[q.fn];
+  if(!fn) return codeError(`NameError: there's no function called ${q.fn}. Check the spelling after def.`,out);
+  const results=[];
+  for(const [args,exp] of q.tests){
+    let got, err=null;
+    try{ Sk.execStart=new Date(); const r=await Sk.misceval.asyncToPromise(()=>Sk.misceval.callsimOrSuspendArray(fn,args.map(a=>Sk.ffi.remapToPy(JSON.parse(JSON.stringify(a)))))); got=Sk.ffi.remapToJs(r); }
+    catch(e){ err=fmtErr(e); }
+    results.push({args,exp,got,err,ok:!err&&canon(got)===canon(exp)});
+  }
+  btn.disabled=false;
+  const passed=results.filter(r=>r.ok).length, allOk=passed===results.length;
+  con.innerHTML=`${out?`<span class="h">Your code printed</span><pre>${esc(out.length>1200?out.slice(0,1200)+"\n…":out)}</pre>`:""}
+   <span class="h">Tests · ${passed}/${results.length} passed</span>
+   ${results.map(r=>`<div class="trow ${r.ok?"pass":"fail"}"><span class="m">${r.ok?"✓":"✗"}</span><span class="d">${esc(callStr(q,r.args))} → ${r.err?`<span class="errbox">${esc(r.err)}</span>`:esc(pyRepr(r.got))}${r.ok?"":`\n  expected ${esc(pyRepr(r.exp))}`}</span></div>`).join("")}`;
+  if(allOk) questWon(); else questMiss(results);
+}
+function codeError(msg,out){
+  const con=document.getElementById("console"); document.getElementById("run").disabled=false;
+  con.innerHTML=`${out?`<span class="h">Your code printed</span><pre>${esc(out)}</pre>`:""}<span class="h">Error · no energy lost</span><pre class="errbox">${esc(msg)}</pre>`;
+  document.getElementById("result").innerHTML=`<div class="lose" style="background:var(--sun-soft)"><h3 style="color:var(--ink)">The code didn't run</h3><p>${C().name}: ${esc(explainErr(msg))}</p></div>`;
+}
+function explainErr(m){
+  if(/SyntaxError|ParseError/.test(m)) return "That's a syntax error, so Python couldn't read the code. Check colons after def/if/for, matching brackets and quotes, and the line number shown.";
+  if(/IndentationError|indent/i.test(m)) return "The indentation is off. Lines inside a def, if or for need 4 more spaces than the line above them.";
+  if(/NameError/.test(m)) return "Python found a name it doesn't know. Check spelling, and make sure a variable is created before you use it.";
+  if(/TypeError/.test(m)) return "Two values of types that don't fit together, like adding a number to text. Look at the line shown.";
+  if(/TimeLimit/.test(m)) return "The code ran too long. A while loop probably never ends. Make sure its condition becomes False.";
+  return "Read the error message from the last line upward. The line number tells you where to look.";
+}
+function questMiss(results){
+  P.run.energy--; drawEnergy(); saveP();
+  const f=results.find(r=>!r.ok);
+  const what=f.err?`it raised ${f.err.split(":")[0]}`:`it returned ${pyRepr(f.got)}`;
+  const nudge=f.got===null&&!f.err?" A result of None usually means the function never reaches a return statement.":"";
+  document.getElementById("result").innerHTML=`<div class="lose"><h3>Not yet · −1 energy</h3>
+    <p>${C().name}: ${esc(pick(C().oops))} For <code>${esc(callStr(Q.q,f.args))}</code> ${esc(what)}, but the chamber expects <code>${esc(pyRepr(f.exp))}</code>.${esc(nudge)}${Q.hints<Q.q.hints.length?" Want a hint?":""}</p></div>`;
+  if(P.run.energy<=0) setTimeout(runOver,900);
+}
+function questWon(){
+  const q=Q.q; Q.solved=true;
+  const gems=Q.revealed?0:Math.max(10,30-Q.hints*7);
+  const firstClear=!P.solved[q.id];
+  P.solved[q.id]={hints:Q.hints,revealed:Q.revealed||false};
+  if(P.solved[q.id]&&!firstClear){} // keep latest attempt record
+  P.run.gems+=gems; P.xp+=gems+(firstClear?10:0); P.run.depth++;
+  P.survBest=Math.max(P.survBest,P.run.depth); bumpStreak();
+  const finished=P.run.depth>=QUESTS.length;
+  saveP(); drawHints();
+  document.querySelector(".cave-speak .av").className="av happy";
+  document.getElementById("result").innerHTML=`<div class="win">
+    <div class="fb-head">${av(P.companion,"happy")}<div><h3>Chamber cleared!</h3><p class="says">${C().name}: ${esc(pick(C().cheer))}</p></div></div>
+    <p><b>+${gems} gems</b>${firstClear?" · +10 XP first clear":""}${Q.hints?` · ${Q.hints} hint${Q.hints>1?"s":""} used`:" · no hints"}</p>
+    <div class="logic"><span class="label">The logic</span><ol>${q.logic.map(x=>`<li>${esc(x)}</li>`).join("")}</ol></div>
+    <div><span class="label">One clean solution</span><div class="mini" style="margin-top:6px"><pre>${hl(q.solution)}</pre></div></div>
+    <button class="btn btn-ok btn-full" id="sv-next">${finished?"Claim the Source Stone":"Go deeper · chamber "+(P.run.depth+1)}</button></div>`;
+  document.getElementById("sv-next").onclick=()=>finished?runVictory():openQuest();
+  document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function runOver(){
+  const reached=P.run.depth, gems=P.run.gems; P.run=null; saveP();
+  setWide(false,false);
+  app.innerHTML=`<div class="result">${av(P.companion,"sad")}<span class="label">Survival mode</span><h2>Out of energy</h2>
+    <p class="muted" style="max-width:36ch">${C().name}: We cleared ${reached} chamber${reached===1?"":"s"} this run. Every chamber you cleared stays on your progress page, and checkpoints unlock at chambers 4 and 7.</p>
+    <div class="tiles"><div class="tile"><b>${reached}</b><span>cleared</span></div><div class="tile"><b>${gems}</b><span>gems</span></div><div class="tile"><b>${P.survBest}</b><span>best</span></div></div>
+    <div class="btns"><button class="btn btn-sun btn-full" id="ro-again">Back to the ruins</button><button class="btn btn-ghost btn-full" id="ro-home">Home</button></div></div>`;
+  document.getElementById("ro-again").onclick=survivalLobby; document.getElementById("ro-home").onclick=home;
+  window.scrollTo(0,0);
+}
+function runVictory(){
+  const gems=P.run.gems; P.run=null; P.xp+=50; saveP();
+  setWide(false,false);
+  app.innerHTML=`<div class="result">${av(P.companion,"happy")}<span class="label">Ruins of Recursion</span><h2>The Source Stone is yours</h2>
+    <p class="muted" style="max-width:36ch">${C().name}: Ten chambers, all solved with your own code. That's loops, conditions, strings, lists and dictionaries, used for real. +50 XP bonus.</p>
+    <div class="tiles"><div class="tile"><b>${QUESTS.length}</b><span>cleared</span></div><div class="tile"><b>${gems}</b><span>gems</span></div><div class="tile"><b>${level()}</b><span>level</span></div></div>
+    <div class="btns"><button class="btn btn-sun btn-full" id="v-again">Run it again with fewer hints</button><button class="btn btn-ghost btn-full" id="v-home">Home</button></div></div>`;
+  document.getElementById("v-again").onclick=survivalLobby; document.getElementById("v-home").onclick=home;
+}
+
+boot();
+</script>
