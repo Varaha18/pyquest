@@ -653,7 +653,9 @@ async function boot(){
   if(ok){
     fbAuth.getRedirectResult().catch(e=>toast(authErr(e)));
     fbAuth.onAuthStateChanged(async u=>{
-      if(u){ await loadCloudProfile(u); afterLogin(); }
+      stopVerifyPoll();
+      if(u && needsVerify(u)){ verifyScreen(u); }
+      else if(u){ await loadCloudProfile(u); afterLogin(); }
       else if(lsGet("pyquest.session")==="guest"){ startGuest(); }
       else authScreen();
     });
@@ -671,6 +673,53 @@ function startGuest(name){
   lsSet("pyquest.session","guest"); saveP(); afterLogin();
 }
 function afterLogin(){ if(!P.companion) pickScreen(true); else home(); }
+
+/* ================= Email verification ================= */
+// Email/password accounts must confirm their address before playing. Google accounts are already verified.
+const needsVerify=u=>!u.emailVerified && u.providerData.some(p=>p.providerId==="password");
+const verifySettings=()=>({url:location.origin+location.pathname});
+let verifyPoll=null, resendAt=0;
+function stopVerifyPoll(){ if(verifyPoll){ clearInterval(verifyPoll); verifyPoll=null; } }
+async function finishVerified(){
+  stopVerifyPoll();
+  const u=fbAuth.currentUser; if(!u) return;
+  await u.getIdToken(true); // refresh so the database sees the verified email
+  await loadCloudProfile(u); afterLogin();
+}
+async function checkVerified(silent){
+  const u=fbAuth.currentUser; if(!u) return false;
+  try{ await u.reload(); }catch(e){ if(!silent) toast(authErr(e)); return false; }
+  if(fbAuth.currentUser.emailVerified){ await finishVerified(); return true; }
+  return false;
+}
+function verifyScreen(u){
+  setWide(false,false);
+  const t=document.querySelector(".tabs"); if(t) t.remove();
+  app.innerHTML=`<div class="auth">
+    <div class="hero-parade">${av("mira","idle")}</div>
+    <div class="logo"><span class="label">One last step</span><h1 style="font-size:32px">Check your email</h1>
+      <p>We sent a verification link to <b>${esc(u.email)}</b>. Open it, then come back here.</p></div>
+    <div class="card">
+      <p class="muted" style="font-size:14px">The email comes from <b>noreply@pyquest-166d6.firebaseapp.com</b>. If it isn't in your inbox within a minute, check Spam or Junk.</p>
+      <p class="err" id="v-err"></p><p class="ok-msg" id="v-ok"></p>
+      <button class="btn btn-blue btn-full" id="v-done">I've verified my email</button>
+      <button class="btn btn-ghost btn-full" id="v-resend">Resend email</button>
+      <button class="linkbtn" id="v-out" style="justify-self:center">Use a different account</button>
+    </div>
+    <p class="note">This page continues automatically once your email is verified.</p>
+  </div>`;
+  const err=document.getElementById("v-err"), okm=document.getElementById("v-ok");
+  document.getElementById("v-done").onclick=async()=>{ err.textContent=""; okm.textContent="";
+    const b=document.getElementById("v-done"); b.disabled=true;
+    if(!(await checkVerified(false))){ err.textContent="Not verified yet. Tap the link in the email first, then try again."; b.disabled=false; } };
+  document.getElementById("v-resend").onclick=async()=>{ err.textContent=""; okm.textContent="";
+    const wait=Math.ceil((resendAt-Date.now())/1000);
+    if(wait>0){ err.textContent=`Wait ${wait} seconds before sending another email.`; return; }
+    try{ await fbAuth.currentUser.sendEmailVerification(verifySettings()); resendAt=Date.now()+60000; okm.textContent="Sent. Check your inbox and Spam folder."; }
+    catch(e){ err.textContent=authErr(e); } };
+  document.getElementById("v-out").onclick=async()=>{ stopVerifyPoll(); await fbAuth.signOut(); };
+  stopVerifyPoll(); verifyPoll=setInterval(()=>checkVerified(true),5000);
+}
 
 /* ================= Auth screen ================= */
 let authMode="in";
@@ -715,6 +764,7 @@ function authScreen(){
         const cred=await fbAuth.createUserWithEmailAndPassword(email,pass);
         const nm=(document.getElementById("a-name").value||"").trim();
         if(nm){ await cred.user.updateProfile({displayName:nm}); lsSet("pyquest.pendingName",nm); }
+        await cred.user.sendEmailVerification(verifySettings()); resendAt=Date.now()+60000;
       } else await fbAuth.signInWithEmailAndPassword(email,pass);
       lsDel("pyquest.session");
     }catch(e){ err.textContent=authErr(e); btn.disabled=false; }
