@@ -340,7 +340,8 @@ const UNITS = [
    steps:["7 // 2 is floor division: 7 / 2 = 3.5, rounded down to 3.","7 % 2 is the remainder: 2 fits into 7 three times (6), leaving 1.","print with two values puts a space between them: 3 1."],
    trap:{"3.5 1":"3.5 is the result of 7 / 2. The double slash // drops the fraction.","3 0.5":"% gives the whole remainder, 1, not a fraction.","4 1":"// always rounds down, not to the nearest number."}},
   {t:"order", q:"Build a program that prints the average, 5.0", lines:["a = 4","b = 6","avg = (a + b) / 2","print(avg)"],
-   steps:["a and b must be defined before any line uses them.","avg = (a + b) / 2 computes (4 + 6) / 2 = 10 / 2.","A single / always returns a float, so avg is 5.0, not 5.","print(avg) goes last, once avg exists."]}
+   alts:[[1,0,2,3]],
+   steps:["a and b must be defined before any line uses them. Their order between each other doesn't matter: b = 6 then a = 4 works too.","avg = (a + b) / 2 computes (4 + 6) / 2 = 10 / 2.","A single / always returns a float, so avg is 5.0, not 5.","print(avg) goes last, once avg exists."]}
  ]},
  {title:"Strings", blurb:"Indexing, slicing, methods", qs:[
   {t:"out", code:"s = \"python\"\nprint(s[0], s[-1])", opts:["p n","p o","y n","python"], a:0,
@@ -986,7 +987,7 @@ function renderLesson(){
 }
 function check(){
   const q=L.queue[0];
-  L.correct = q.t==="order" ? L.picked.every((v,i)=>v===i) : L.sel===q.opts[q.a];
+  L.correct = q.t==="order" ? [q.lines.map((_,i)=>i),...(q.alts||[])].some(o=>o.every((v,i)=>L.picked[i]===v)) : L.sel===q.opts[q.a];
   L.checked=true;
   if(L.correct){ L.xp+=q.retry?5:10; if(!q.retry) L.firstTry++; } else { L.hearts--; L.mistakes++; }
   renderLesson();
